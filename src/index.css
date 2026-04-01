@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Yatra+One&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Yatra One', 'Outfit', ui-sans-serif, system-ui, sans-serif;
+
+  --color-nepal-dark: #0f172a;
+  --color-nepal-white: #f8fafc;
+
+  --color-crimson-50: #fef2f2;
+  --color-crimson-100: #fee2e2;
+  --color-crimson-200: #fecaca;
+  --color-crimson-300: #fca5a5;
+  --color-crimson-400: #f87171;
+  --color-crimson-500: #dc2626;
+  --color-crimson-600: #b91c1c;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply min-h-screen;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 bg-slate-50 font-sans text-slate-700 antialiased;
+    background-image:
+      radial-gradient(circle at 9% 14%, rgba(220, 38, 38, 0.12), transparent 32%),
+      radial-gradient(circle at 89% 8%, rgba(14, 116, 144, 0.11), transparent 34%),
+      linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  }
+
+  * {
+    @apply selection:bg-crimson-200 selection:text-nepal-dark;
+  }
+}
+
+@layer components {
+  .fade-in {
+    @apply animate-[fadeIn_320ms_ease-out];
+  }
+
+  .shell {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+  }
+
+  .glass-panel {
+    @apply rounded-2xl border border-white/40 bg-white/75 shadow-xl shadow-slate-300/30 backdrop-blur-md;
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200/90 bg-white p-5 shadow-md shadow-slate-300/20 transition duration-200;
+  }
+
+  .card-soft {
+    @apply rounded-2xl border border-slate-200/80 bg-white/80 p-5 backdrop-blur;
+  }
+
+  .page-title {
+    @apply font-display text-3xl font-bold leading-tight text-nepal-dark md:text-4xl;
+  }
+
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-crimson-500;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border border-slate-300 bg-white/95 px-3.5 py-2.5 text-sm text-nepal-dark outline-none transition placeholder:text-slate-400 focus:border-crimson-400 focus:ring-4 focus:ring-crimson-100;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-linear-to-r from-crimson-500 to-crimson-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-crimson-500/25 transition hover:-translate-y-0.5 hover:from-crimson-600 hover:to-crimson-600 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-2.5 text-sm font-semibold text-nepal-dark transition hover:-translate-y-0.5 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-nepal-dark transition hover:bg-slate-100;
+  }
+
+  .badge-booked {
+    @apply inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-600;
+  }
+
+  .badge-available {
+    @apply inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
