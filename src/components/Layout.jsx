@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
@@ -51,6 +51,7 @@ export default function Layout() {
 
   const navLink = (to, label) => (
     <Link
+      key={to}
       to={to}
       onClick={() => setMenuOpen(false)}
       className={`border-b-2 border-transparent px-3 py-2 text-sm font-medium transition ${
@@ -68,6 +69,7 @@ export default function Layout() {
 
     return (
       <button
+        key={sectionId}
         type="button"
         onClick={() => {
           setMenuOpen(false);
@@ -102,7 +104,9 @@ export default function Layout() {
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
-            {publicNavItems.map((item) => publicNavLink(item.sectionId, item.label))}
+            {publicNavItems.slice(0, 2).map((item) => publicNavLink(item.sectionId, item.label))}
+            {navLink('/gallery', 'Gallery')}
+            {publicNavItems.slice(2).map((item) => publicNavLink(item.sectionId, item.label))}
             {isAuthenticated && roleNavItems.map((item) => navLink(item.to, item.label))}
           </nav>
 
@@ -129,6 +133,8 @@ export default function Layout() {
             className="rounded-lg p-2 transition hover:bg-slate-100 md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
           >
             <div className="space-y-1.5">
               <span className={`block h-0.5 w-6 bg-nepal-dark transition-transform duration-200 ${menuOpen ? 'translate-y-2 rotate-45' : ''}`} />
@@ -139,8 +145,10 @@ export default function Layout() {
         </div>
 
         {menuOpen && (
-          <div className="shell space-y-3 border-t border-slate-200 py-4 md:hidden">
-            {publicNavItems.map((item) => publicNavLink(item.sectionId, item.label))}
+          <div id="mobile-menu" className="shell space-y-3 border-t border-slate-200 py-4 md:hidden">
+            {publicNavItems.slice(0, 2).map((item) => publicNavLink(item.sectionId, item.label))}
+            {navLink('/gallery', 'Gallery')}
+            {publicNavItems.slice(2).map((item) => publicNavLink(item.sectionId, item.label))}
             {isAuthenticated && roleNavItems.map((item) => navLink(item.to, item.label))}
             {isAuthenticated ? (
               <button onClick={handleLogout} className="btn-secondary mt-2 w-full text-sm">Logout</button>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatLongDate } from '../utils/date';
 
 export default function SlotCard({ slot, onBook, booking = false }) {

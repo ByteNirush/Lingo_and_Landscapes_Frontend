@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import heroBgImage from '../assets/1.jpg';
 import heroBgImage2 from '../assets/2.jpg';
@@ -93,6 +94,12 @@ export default function HomePage() {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  const handleContactSubmit = (event) => {
+    event.preventDefault();
+    toast.success('Thanks for reaching out. We will get back to you soon.');
+    event.currentTarget.reset();
+  };
 
   return (
     <div className="fade-in pb-16">
@@ -304,6 +311,23 @@ export default function HomePage() {
             </article>
           ))}
         </div>
+
+        <div className="mt-10 flex justify-center">
+          <a
+            href="https://www.google.com/maps/place/Lingo+%26+Landscapes/@27.648653,85.3420765,17z/data=!4m8!3m7!1s0x39eb17a4e6aa00f7:0x2483c383b071e02a!8m2!3d27.648653!4d85.3420765!9m1!1b1!16s%2Fg%2F11mvrp18kc?hl=en-NP&entry=ttu&g_ep=EgoyMDI2MDMyOS4wIKXMDSoASAFQAw%3D%3D#:~:text=Overview-,Reviews,-About"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-nepal-dark hover:-translate-y-0.5"
+          >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Read more reviews on Google
+          </a>
+        </div>
       </section>
 
       <section id="faq" className="shell mt-16 scroll-mt-24 md:mt-24">
@@ -313,9 +337,11 @@ export default function HomePage() {
         </div>
         <div className="mx-auto max-w-3xl space-y-3">
           {faqItems.map((item, i) => (
-            <div key={i} className="border border-slate-200 bg-white rounded-lg overflow-hidden transition shadow-sm">
+            <div key={item.q} className="border border-slate-200 bg-white rounded-lg overflow-hidden transition shadow-sm">
               <button 
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                aria-expanded={openFaq === i}
+                aria-controls={`faq-panel-${i}`}
                 className="flex w-full items-center justify-between p-5 text-left text-sm font-semibold text-nepal-dark hover:bg-slate-50"
               >
                 <span>{item.q}</span>
@@ -329,7 +355,7 @@ export default function HomePage() {
                 </svg>
               </button>
               {openFaq === i && (
-                <div className="px-5 pb-5 text-sm text-slate-500">
+                <div id={`faq-panel-${i}`} className="px-5 pb-5 text-sm text-slate-500">
                   {item.a}
                 </div>
               )}
@@ -367,7 +393,7 @@ export default function HomePage() {
           </div>
           
           <div>
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Message sent!'); }}>
+            <form className="space-y-4" onSubmit={handleContactSubmit}>
               <div>
                 <input type="text" placeholder="Your name" className="input-field shadow-sm" required />
               </div>

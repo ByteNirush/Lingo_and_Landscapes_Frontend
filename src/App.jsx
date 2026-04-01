@@ -1,9 +1,9 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 import HomePage from './pages/HomePage';
+import GalleryPage from './pages/GalleryPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SlotsPage from './pages/SlotsPage';
@@ -37,6 +37,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
+        <Route path="gallery" element={<GalleryPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
         <Route path="slots" element={<PrivateRoute><SlotsPage /></PrivateRoute>} />
@@ -61,7 +62,7 @@ export default function App() {
           toastOptions={{
             duration: 3500,
             style: {
-              fontFamily: "'Outfit', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: '14px',
               fontWeight: 500,
               borderRadius: '12px',

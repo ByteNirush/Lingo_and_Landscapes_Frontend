@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatLongDate, formatShortDateTime } from '../utils/date';
 
 export default function BookingCard({ booking, showUser = false }) {
