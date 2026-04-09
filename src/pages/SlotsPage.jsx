@@ -44,7 +44,7 @@ export default function SlotsPage() {
   const available = slots.filter((s) => !s.isBooked).length;
 
   return (
-    <div className="fade-in shell py-10">
+    <div className="fade-in shell py-12 md:py-16">
       <section className="glass-panel mb-8 p-6 md:p-7">
         <div className="section-label mb-2">Available Sessions</div>
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -73,7 +73,7 @@ export default function SlotsPage() {
       </section>
 
       {loading ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="card animate-pulse">
               <div className="mb-4 h-3 w-24 rounded bg-black/10" />
@@ -84,20 +84,20 @@ export default function SlotsPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="card-soft py-24 text-center">
-          <div className="text-5xl mb-4">📅</div>
+          <div className="mb-4 text-5xl">📅</div>
           <h2 className="mb-2 text-xl font-display font-bold text-nepal-dark">
             {filter === 'available' ? 'No available slots right now' : 'No slots found'}
           </h2>
           <p className="text-sm text-slate-500">Check back later or contact your instructor.</p>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((slot) => (
             <SlotCard
-              key={slot._id}
+              key={slot.id ?? slot._id}
               slot={slot}
               onBook={!slot.isBooked ? handleBook : null}
-              booking={bookingId === slot._id}
+              booking={bookingId === (slot.id ?? slot._id)}
             />
           ))}
         </div>

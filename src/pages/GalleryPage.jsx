@@ -10,7 +10,7 @@ const galleryImages = [
 
 export default function GalleryPage() {
   return (
-    <div className="shell py-12 md:py-16">
+    <div className="fade-in shell py-12 md:py-16">
       <div className="mb-8 text-center md:mb-12">
         <div className="section-label">Gallery</div>
         <h1 className="mt-3 font-display text-4xl font-bold text-nepal-dark md:text-5xl">
@@ -23,7 +23,7 @@ export default function GalleryPage() {
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {galleryImages.map((image) => (
-          <article key={image.alt} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <article key={image.alt} className="card overflow-hidden p-0 shadow-sm">
             <img
               src={image.src}
               alt={image.alt}

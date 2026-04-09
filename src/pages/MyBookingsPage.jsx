@@ -23,7 +23,7 @@ export default function MyBookingsPage() {
   }, []);
 
   return (
-    <div className="fade-in shell py-10">
+    <div className="fade-in shell py-12 md:py-16">
       <div className="glass-panel mb-8 p-6 md:p-7">
         <div className="section-label mb-2">Your Schedule</div>
         <h1 className="page-title">My Bookings</h1>
@@ -33,7 +33,7 @@ export default function MyBookingsPage() {
       </div>
 
       {loading ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[1,2,3].map((i) => (
             <div key={i} className="card animate-pulse">
               <div className="mb-4 h-3 w-24 rounded bg-black/10" />
@@ -44,15 +44,15 @@ export default function MyBookingsPage() {
         </div>
       ) : bookings.length === 0 ? (
         <div className="card-soft py-24 text-center">
-          <div className="text-5xl mb-4">📭</div>
+          <div className="mb-4 text-5xl">📭</div>
           <h2 className="text-xl font-display font-bold text-nepal-dark mb-2">No bookings yet</h2>
           <p className="mb-6 text-sm text-slate-500">Browse available slots and reserve your first class.</p>
           <Link to="/slots" className="btn-primary inline-block">Browse Slots →</Link>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {bookings.map((booking) => (
-            <BookingCard key={booking._id} booking={booking} />
+            <BookingCard key={booking.id ?? booking._id} booking={booking} />
           ))}
         </div>
       )}

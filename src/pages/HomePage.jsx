@@ -114,8 +114,8 @@ export default function HomePage() {
           />
         ))}
 
-        <div className="shell relative z-10 py-16 md:py-24 lg:py-28">
-          <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="shell relative z-10 py-20 md:py-32 lg:py-40">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
             <div>
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/90">
                 <span>🇳🇵</span>
@@ -170,21 +170,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="about" className="shell mt-16 scroll-mt-24 md:mt-24">
+      <section id="about" className="shell mt-20 scroll-mt-32 md:mt-32">
         <div className="mb-10 text-center">
           <div className="section-label">About Us</div>
           <h2 className="mt-4 font-display text-4xl font-bold text-nepal-dark">
             A Language Platform Built for Explorers
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 leading-relaxed text-center">
-            Lingo & Landscape connects curious travelers, expats, and culture enthusiasts with native Nepali tutors through live, interactive classes.
+          <p className="mx-auto mt-4 max-w-3xl text-base text-slate-500 leading-relaxed text-center">
+            Lingo and Landscapes is a leading Nepali language training and cultural travel company based in Nepal, 
+            dedicated to helping foreigners learn Nepali and experience authentic local culture.
           </p>
+          <div className="mt-6">
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-2 rounded-xl border border-crimson-200 bg-crimson-50 px-6 py-2.5 text-sm font-semibold text-crimson-600 transition hover:bg-crimson-100"
+            >
+              Learn More
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <article className="bg-slate-50/50 p-6 md:p-8 flex flex-col border-l-[3px] border-crimson-500 shadow-sm hover:shadow-md transition">
-            <div className="mb-5 text-crimson-500 flex justify-center w-10 h-10 items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+          <article className="card-soft group flex flex-col border-l-4 border-crimson-500 transition hover:-translate-y-1 hover:shadow-md">
+            <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-crimson-50 text-crimson-500 transition group-hover:bg-crimson-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
             </div>
             <h3 className="mb-3 text-lg font-bold text-nepal-dark">International Students</h3>
             <p className="text-sm leading-relaxed text-slate-500">
@@ -192,9 +205,9 @@ export default function HomePage() {
             </p>
           </article>
 
-          <article className="bg-slate-50/50 p-6 md:p-8 flex flex-col border-l-[3px] border-crimson-500 shadow-sm hover:shadow-md transition">
-            <div className="mb-5 text-crimson-500 flex justify-center w-10 h-10 items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <article className="card-soft group flex flex-col border-l-4 border-crimson-500 transition hover:-translate-y-1 hover:shadow-md">
+            <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-crimson-50 text-crimson-500 transition group-hover:bg-crimson-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
             <h3 className="mb-3 text-lg font-bold text-nepal-dark">Native Tutors</h3>
             <p className="text-sm leading-relaxed text-slate-500">
@@ -202,9 +215,9 @@ export default function HomePage() {
             </p>
           </article>
 
-          <article className="bg-slate-50/50 p-6 md:p-8 flex flex-col border-l-[3px] border-crimson-500 shadow-sm hover:shadow-md transition">
-            <div className="mb-5 text-crimson-500 flex justify-center w-10 h-10 items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          <article className="card-soft group flex flex-col border-l-4 border-crimson-500 transition hover:-translate-y-1 hover:shadow-md">
+            <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-crimson-50 text-crimson-500 transition group-hover:bg-crimson-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
             </div>
             <h3 className="mb-3 text-lg font-bold text-nepal-dark">Structured Curriculum</h3>
             <p className="text-sm leading-relaxed text-slate-500">
@@ -214,7 +227,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="how-it-works" className="shell mt-14 scroll-mt-24">
+      <section id="services" className="shell mt-20 scroll-mt-32 md:mt-32">
+        <div className="mb-10 text-center">
+          <div className="section-label">Our Services</div>
+          <h2 className="mt-4 font-display text-4xl font-bold text-nepal-dark">
+            Visa Support Services
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 leading-relaxed text-center">
+            Professional visa guidance and documentation support for staying and studying in Nepal.
+          </p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <article className="card group hover:-translate-y-1 hover:shadow-lg">
+            <div className="mb-4 inline-flex rounded-xl bg-crimson-50 p-3 text-2xl transition group-hover:bg-crimson-100">🎓</div>
+            <h3 className="text-base font-bold text-nepal-dark">Student Visa</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              Guidance for students seeking to study in Nepal with complete documentation support.
+            </p>
+          </article>
+
+          <article className="card group hover:-translate-y-1 hover:shadow-lg">
+            <div className="mb-4 inline-flex rounded-xl bg-crimson-50 p-3 text-2xl transition group-hover:bg-crimson-100">💼</div>
+            <h3 className="text-base font-bold text-nepal-dark">Business Visa</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              Comprehensive support for entrepreneurs and business professionals entering Nepal.
+            </p>
+          </article>
+
+          <article className="card group hover:-translate-y-1 hover:shadow-lg">
+            <div className="mb-4 inline-flex rounded-xl bg-crimson-50 p-3 text-2xl transition group-hover:bg-crimson-100">📈</div>
+            <h3 className="text-base font-bold text-nepal-dark">Investment Visa</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              Specialized assistance for investors looking to establish ventures in Nepal.
+            </p>
+          </article>
+
+          <article className="card group hover:-translate-y-1 hover:shadow-lg">
+            <div className="mb-4 inline-flex rounded-xl bg-crimson-50 p-3 text-2xl transition group-hover:bg-crimson-100">🔧</div>
+            <h3 className="text-base font-bold text-nepal-dark">Working Visa</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              End-to-end support for professionals seeking employment opportunities in Nepal.
+            </p>
+          </article>
+
+          <article className="card group hover:-translate-y-1 hover:shadow-lg">
+            <div className="mb-4 inline-flex rounded-xl bg-crimson-50 p-3 text-2xl transition group-hover:bg-crimson-100">🌍</div>
+            <h3 className="text-base font-bold text-nepal-dark">NRN Visa</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              Dedicated services for Non-Resident Nepalis returning or staying in Nepal.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="how-it-works" className="shell mt-20 scroll-mt-32 md:mt-32">
         <div className="mb-8 text-center">
           <div className="section-label">Why Learners Love It</div>
           <h2 className="page-title mt-3">Designed for practical fluency</h2>
@@ -231,7 +298,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="shell mt-14">
+      <section className="shell mt-20 md:mt-32">
         <div className="card-soft border-slate-300 bg-linear-to-br from-white to-slate-100/70 p-6 md:p-8">
           <div className="mb-7 text-center">
             <div className="section-label">Your Learning Journey</div>
@@ -256,7 +323,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="testimonials" className="shell mt-16 scroll-mt-24 md:mt-24">
+      <section id="testimonials" className="shell mt-20 scroll-mt-32 md:mt-32">
         <div className="mb-10 text-center">
           <div className="section-label">Testimonials</div>
           <h2 className="mt-4 font-display text-4xl font-bold text-nepal-dark">What learners are saying</h2>
@@ -330,19 +397,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="faq" className="shell mt-16 scroll-mt-24 md:mt-24">
+      <section id="faq" className="shell mt-20 scroll-mt-32 md:mt-32">
         <div className="mb-10 text-center">
           <div className="section-label">FAQ</div>
           <h2 className="mt-4 font-display text-4xl font-bold text-nepal-dark">Common Questions</h2>
         </div>
         <div className="mx-auto max-w-3xl space-y-3">
           {faqItems.map((item, i) => (
-            <div key={item.q} className="border border-slate-200 bg-white rounded-lg overflow-hidden transition shadow-sm">
-              <button 
+            <div key={item.q} className="card-soft overflow-hidden p-0 transition hover:shadow-md">
+              <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 aria-expanded={openFaq === i}
                 aria-controls={`faq-panel-${i}`}
-                className="flex w-full items-center justify-between p-5 text-left text-sm font-semibold text-nepal-dark hover:bg-slate-50"
+                className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold text-nepal-dark hover:bg-slate-50"
               >
                 <span>{item.q}</span>
                 <svg
@@ -355,7 +422,7 @@ export default function HomePage() {
                 </svg>
               </button>
               {openFaq === i && (
-                <div id={`faq-panel-${i}`} className="px-5 pb-5 text-sm text-slate-500">
+                <div id={`faq-panel-${i}`} className="px-5 pb-5 text-sm leading-relaxed text-slate-500">
                   {item.a}
                 </div>
               )}
@@ -364,7 +431,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="contact" className="shell mt-16 mb-20 scroll-mt-24 md:mt-32 md:mb-32">
+      <section id="contact" className="shell my-20 scroll-mt-32 md:my-32">
         <div className="mb-10 text-center">
           <div className="section-label">Contact</div>
           <h2 className="mt-4 font-display text-4xl font-bold text-nepal-dark">Get in Touch</h2>
@@ -392,7 +459,7 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div>
+          <div className="card-soft">
             <form className="space-y-4" onSubmit={handleContactSubmit}>
               <div>
                 <input type="text" placeholder="Your name" className="input-field shadow-sm" required />
