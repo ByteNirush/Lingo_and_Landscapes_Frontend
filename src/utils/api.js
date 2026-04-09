@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1',
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -17,7 +17,11 @@ api.interceptors.response.use(
     if (err.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Don't redirect if already on login or signup page
+      const pathname = window.location.pathname;
+      if (pathname !== '/login' && pathname !== '/signup') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(err);
   }
