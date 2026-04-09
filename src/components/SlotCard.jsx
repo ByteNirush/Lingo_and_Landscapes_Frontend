@@ -5,7 +5,7 @@ export default function SlotCard({ slot, onBook, booking = false }) {
     <div className={`card relative overflow-hidden ${slot.isBooked ? 'opacity-80' : 'hover:-translate-y-1 hover:shadow-lg'}`}>
       <div className={`absolute left-0 right-0 top-0 h-1 ${slot.isBooked ? 'bg-slate-300' : 'bg-linear-to-r from-crimson-500 to-orange-400'}`} />
 
-      <div className="mt-1 flex items-start justify-between gap-3">
+      <div className="mt-1 flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="section-label mb-1.5">Class Session</div>
           <div className="flex flex-wrap items-center gap-2">
@@ -22,7 +22,7 @@ export default function SlotCard({ slot, onBook, booking = false }) {
           )}
         </div>
 
-        <div className="flex flex-shrink-0 flex-col items-end gap-2">
+        <div className="flex shrink-0 flex-col items-end gap-2">
           {slot.isBooked ? (
             <span className="badge-booked">● Booked</span>
           ) : (
@@ -32,13 +32,13 @@ export default function SlotCard({ slot, onBook, booking = false }) {
       </div>
 
       {slot.meetLink && !slot.isBooked && (
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
           <span className="text-xs font-medium text-slate-400">Google Meet Session</span>
           {onBook && !slot.isBooked && (
             <button
-              onClick={() => onBook(slot._id)}
+              onClick={() => onBook(slot.id ?? slot._id)}
               disabled={booking}
-              className="btn-primary px-5 py-2 text-sm"
+              className="btn-primary px-5 py-2.5 text-sm"
             >
               {booking ? (
                 <span className="flex items-center gap-2">
@@ -52,13 +52,13 @@ export default function SlotCard({ slot, onBook, booking = false }) {
       )}
 
       {slot.isBooked && onBook && (
-        <div className="mt-4 border-t border-slate-100 pt-4">
+        <div className="mt-5 border-t border-slate-100 pt-4">
           <p className="text-center text-xs text-slate-400">This slot has been taken</p>
         </div>
       )}
 
       {!onBook && (
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
           <span className="text-xs text-slate-400">Admin view</span>
           <span className={`text-xs font-semibold ${slot.isBooked ? 'text-red-500' : 'text-emerald-600'}`}>
             {slot.isBooked ? 'Booked' : 'Open'}

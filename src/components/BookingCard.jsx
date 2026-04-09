@@ -14,8 +14,8 @@ export default function BookingCard({ booking, showUser = false }) {
           <div className="section-label mb-2">Confirmed Session</div>
 
           {showUser && user && (
-            <div className="mb-3 flex items-center gap-2 border-b border-slate-100 pb-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-crimson-500 text-sm font-bold text-white">
+            <div className="mb-4 flex items-center gap-3 border-b border-slate-100 pb-4">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-crimson-500 to-crimson-600 text-sm font-bold text-white">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -41,18 +41,18 @@ export default function BookingCard({ booking, showUser = false }) {
           </div>
         </div>
 
-        <span className="badge-booked flex-shrink-0">Booked</span>
+        <span className="badge-booked flex-none">Booked</span>
       </div>
 
       {slot.meetLink && (
-        <div className="mt-4 border-t border-slate-100 pt-4">
+        <div className="mt-5 border-t border-slate-100 pt-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs text-slate-400">Join your session</span>
             <a
               href={slot.meetLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-crimson-50 px-3 py-1.5 text-sm font-semibold text-crimson-600 transition hover:bg-crimson-100"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-crimson-50 px-3.5 py-2 text-sm font-semibold text-crimson-600 transition hover:bg-crimson-100"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.069A1 1 0 0121 8.869v6.262a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -63,7 +63,7 @@ export default function BookingCard({ booking, showUser = false }) {
         </div>
       )}
 
-      <div className="mt-2 text-xs text-slate-400">Booked on {bookedAt}</div>
+      <div className="mt-3 text-xs text-slate-400">Booked on {bookedAt}</div>
     </div>
   );
 }

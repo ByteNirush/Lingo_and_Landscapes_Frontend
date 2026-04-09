@@ -12,8 +12,10 @@ const publicNavItems = [
 ];
 
 const learnerNavItems = [
+  { to: '/dashboard', label: 'Dashboard' },
   { to: '/slots', label: 'Browse Slots' },
   { to: '/my-bookings', label: 'My Bookings' },
+  { to: '/profile', label: 'Profile' },
 ];
 
 const adminNavItems = [
@@ -21,6 +23,7 @@ const adminNavItems = [
   { to: '/admin/slots', label: 'Slots' },
   { to: '/admin/bookings', label: 'Bookings' },
   { to: '/admin/users', label: 'Users' },
+  { to: '/profile', label: 'Profile' },
 ];
 
 export default function Layout() {
@@ -49,15 +52,20 @@ export default function Layout() {
     setMenuOpen(false);
   };
 
+  const isAdminArea = location.pathname.startsWith('/admin');
+  const isLearnerArea = ['/dashboard', '/slots', '/my-bookings', '/profile'].includes(location.pathname);
+  const showDashboardNav = isAuthenticated && (isAdminArea || isLearnerArea);
+  const showPublicNav = !showDashboardNav;
+
   const navLink = (to, label) => (
     <Link
       key={to}
       to={to}
       onClick={() => setMenuOpen(false)}
-      className={`border-b-2 border-transparent px-3 py-2 text-sm font-medium transition ${
+      className={`rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
         location.pathname === to
-          ? 'border-crimson-500 text-crimson-600'
-          : 'text-slate-600 hover:border-slate-300 hover:text-nepal-dark'
+          ? 'bg-crimson-50 text-crimson-600'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-nepal-dark'
       }`}
     >
       {label}
@@ -78,10 +86,10 @@ export default function Layout() {
             scrollToSection(sectionId);
           }
         }}
-        className={`border-b-2 border-transparent px-3 py-2 text-sm font-medium transition ${
+        className={`rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
           isActive
-            ? 'border-crimson-500 text-crimson-600'
-            : 'text-slate-600 hover:border-slate-300 hover:text-nepal-dark'
+            ? 'bg-crimson-50 text-crimson-600'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-nepal-dark'
         }`}
       >
         {label}
@@ -94,7 +102,7 @@ export default function Layout() {
   return (
     <div className="flex min-h-screen flex-col bg-nepal-white">
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
-        <div className="shell flex h-16 items-center justify-between gap-3">
+        <div className="shell flex h-20 items-center justify-between gap-3 md:h-24">
           <Link to="/" className="group flex items-center gap-2.5">
             <img src={logo} alt="Lingo Landscape Logo" className="h-8 w-auto transition group-hover:-translate-y-0.5" />
             <div>
@@ -104,27 +112,27 @@ export default function Layout() {
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
-            {publicNavItems.slice(0, 2).map((item) => publicNavLink(item.sectionId, item.label))}
-            {navLink('/gallery', 'Gallery')}
-            {publicNavItems.slice(2).map((item) => publicNavLink(item.sectionId, item.label))}
-            {isAuthenticated && roleNavItems.map((item) => navLink(item.to, item.label))}
+            {showPublicNav && publicNavItems.slice(0, 2).map((item) => publicNavLink(item.sectionId, item.label))}
+            {showPublicNav && navLink('/gallery', 'Gallery')}
+            {showPublicNav && publicNavItems.slice(2).map((item) => publicNavLink(item.sectionId, item.label))}
+            {showDashboardNav && roleNavItems.map((item) => navLink(item.to, item.label))}
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
             {isAuthenticated ? (
               <div className="flex items-center gap-4 px-1 py-2">
                 <div className="text-right">
-                  <div className="text-xs font-medium text-slate-400">{isAdmin ? 'Admin' : 'Learner'}</div>
-                  <div className="text-sm font-semibold leading-none text-nepal-dark">{user?.name}</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{isAdmin ? 'Admin' : 'Learner'}</div>
+                  <div className="text-sm font-bold text-nepal-dark">{user?.full_name}</div>
                 </div>
-                <button onClick={handleLogout} className="btn-secondary text-sm px-4 py-2">
+                <button onClick={handleLogout} className="btn-secondary !px-5 !py-2.5 !text-sm">
                   Logout
                 </button>
               </div>
             ) : (
               <>
-                <Link to="/login" className="btn-ghost text-sm">Login</Link>
-                <Link to="/signup" className="btn-primary px-5 py-2.5 text-sm">Get Started</Link>
+                <Link to="/login" className="btn-ghost !px-5 !py-2.5 !text-sm">Login</Link>
+                <Link to="/signup" className="btn-primary !px-6 !py-2.5 !text-sm">Get Started</Link>
               </>
             )}
           </div>
@@ -146,10 +154,10 @@ export default function Layout() {
 
         {menuOpen && (
           <div id="mobile-menu" className="shell space-y-3 border-t border-slate-200 py-4 md:hidden">
-            {publicNavItems.slice(0, 2).map((item) => publicNavLink(item.sectionId, item.label))}
-            {navLink('/gallery', 'Gallery')}
-            {publicNavItems.slice(2).map((item) => publicNavLink(item.sectionId, item.label))}
-            {isAuthenticated && roleNavItems.map((item) => navLink(item.to, item.label))}
+            {showPublicNav && publicNavItems.slice(0, 2).map((item) => publicNavLink(item.sectionId, item.label))}
+            {showPublicNav && navLink('/gallery', 'Gallery')}
+            {showPublicNav && publicNavItems.slice(2).map((item) => publicNavLink(item.sectionId, item.label))}
+            {showDashboardNav && roleNavItems.map((item) => navLink(item.to, item.label))}
             {isAuthenticated ? (
               <button onClick={handleLogout} className="btn-secondary mt-2 w-full text-sm">Logout</button>
             ) : (
@@ -166,8 +174,8 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-slate-200 py-6">
-        <div className="shell flex flex-col items-center justify-between gap-2 text-center text-sm text-slate-500 md:flex-row md:text-left">
+      <footer className="border-t border-slate-200/80 bg-white/70 py-10 backdrop-blur-sm">
+        <div className="shell flex flex-col items-center justify-between gap-4 text-center text-sm font-medium text-slate-500 md:flex-row md:text-left">
           <span>© {new Date().getFullYear()} Learn Nepali</span>
           <span>Made for fluent conversations and confident learners.</span>
         </div>
