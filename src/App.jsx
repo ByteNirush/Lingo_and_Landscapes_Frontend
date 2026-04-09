@@ -3,15 +3,18 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 import GalleryPage from './pages/GalleryPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SlotsPage from './pages/SlotsPage';
 import MyBookingsPage from './pages/MyBookingsPage';
+import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSlots from './pages/AdminSlots';
 import AdminBookings from './pages/AdminBookings';
 import AdminUsers from './pages/AdminUsers';
+import ProfilePage from './pages/ProfilePage';
 import Layout from './components/Layout';
 
 const PrivateRoute = ({ children }) => {
@@ -28,6 +31,14 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
+const DashboardRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><Spinner /></div>;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (isAdmin) return <Navigate to="/admin" replace />;
+  return children;
+};
+
 const Spinner = () => (
   <div className="w-8 h-8 border-4 border-crimson-500 border-t-transparent rounded-full animate-spin" />
 );
@@ -37,11 +48,14 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
+        <Route path="about" element={<AboutPage />} />
         <Route path="gallery" element={<GalleryPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
+        <Route path="dashboard" element={<DashboardRoute><UserDashboard /></DashboardRoute>} />
         <Route path="slots" element={<PrivateRoute><SlotsPage /></PrivateRoute>} />
         <Route path="my-bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
+        <Route path="profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="admin/slots" element={<AdminRoute><AdminSlots /></AdminRoute>} />
         <Route path="admin/bookings" element={<AdminRoute><AdminBookings /></AdminRoute>} />
