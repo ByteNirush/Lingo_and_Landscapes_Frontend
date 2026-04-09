@@ -7,13 +7,16 @@
   --color-nepal-dark: #0f172a;
   --color-nepal-white: #f8fafc;
 
-  --color-crimson-50: #fef2f2;
-  --color-crimson-100: #fee2e2;
-  --color-crimson-200: #fecaca;
-  --color-crimson-300: #fca5a5;
-  --color-crimson-400: #f87171;
-  --color-crimson-500: #dc2626;
-  --color-crimson-600: #b91c1c;
+  --color-crimson-50: #fff1f2;
+  --color-crimson-100: #ffe4e6;
+  --color-crimson-200: #fecdd3;
+  --color-crimson-300: #fda4af;
+  --color-crimson-400: #fb7185;
+  --color-crimson-500: #f43f5e;
+  --color-crimson-600: #e11d48;
+  --color-crimson-700: #be123c;
+  --color-crimson-800: #9f1239;
+  --color-crimson-900: #881337;
 }
 
 @layer base {
@@ -30,9 +33,10 @@
   body {
     @apply m-0 bg-slate-50 font-sans text-slate-700 antialiased;
     background-image:
-      radial-gradient(circle at 9% 14%, rgba(220, 38, 38, 0.12), transparent 32%),
-      radial-gradient(circle at 89% 8%, rgba(14, 116, 144, 0.11), transparent 34%),
-      linear-gradient(to bottom, #f8fafc, #f1f5f9);
+      radial-gradient(circle at 8% 12%, rgba(244, 63, 94, 0.08), transparent 30%),
+      radial-gradient(circle at 92% 8%, rgba(14, 116, 144, 0.06), transparent 34%),
+      radial-gradient(circle at 50% 100%, rgba(251, 146, 60, 0.05), transparent 42%),
+      linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
   }
 
   * {
@@ -42,62 +46,62 @@
 
 @layer components {
   .fade-in {
-    @apply animate-[fadeIn_320ms_ease-out];
+    @apply animate-[fadeIn_400ms_ease-out];
   }
 
   .shell {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-12;
   }
 
   .glass-panel {
-    @apply rounded-2xl border border-white/40 bg-white/75 shadow-xl shadow-slate-300/30 backdrop-blur-md;
+    @apply rounded-[24px] border border-slate-200/60 bg-white/70 shadow-[0_30px_60px_-20px_rgba(15,23,42,0.1)] backdrop-blur-xl transition-all duration-300;
   }
 
   .card {
-    @apply rounded-2xl border border-slate-200/90 bg-white p-5 shadow-md shadow-slate-300/20 transition duration-200;
+    @apply rounded-3xl border border-slate-200/70 bg-white p-7 md:p-8 shadow-sm shadow-slate-300/30 transition-all duration-300 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.08)] hover:-translate-y-1;
   }
 
   .card-soft {
-    @apply rounded-2xl border border-slate-200/80 bg-white/80 p-5 backdrop-blur;
+    @apply rounded-3xl border border-slate-200/60 bg-white/60 p-7 md:p-8 backdrop-blur-lg transition-all duration-300 hover:bg-white/80;
   }
 
   .page-title {
-    @apply font-display text-3xl font-bold leading-tight text-nepal-dark md:text-4xl;
+    @apply font-display text-4xl lg:text-5xl font-bold leading-tight tracking-tight text-nepal-dark;
   }
 
   .section-label {
-    @apply text-xs font-semibold uppercase tracking-[0.22em] text-crimson-500;
+    @apply text-xs font-bold uppercase tracking-[0.25em] text-crimson-600;
   }
 
   .input-field {
-    @apply w-full rounded-xl border border-slate-300 bg-white/95 px-3.5 py-2.5 text-sm text-nepal-dark outline-none transition placeholder:text-slate-400 focus:border-crimson-400 focus:ring-4 focus:ring-crimson-100;
+    @apply w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3.5 text-sm md:text-base text-nepal-dark outline-none transition-all duration-200 placeholder:text-slate-400 hover:border-slate-300 focus:border-crimson-400 focus:bg-white focus:ring-[4px] focus:ring-crimson-100;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-linear-to-r from-crimson-500 to-crimson-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-crimson-500/25 transition hover:-translate-y-0.5 hover:from-crimson-600 hover:to-crimson-600 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center rounded-2xl bg-linear-to-r from-crimson-500 to-crimson-600 px-7 py-3.5 text-sm md:text-base font-semibold text-white shadow-lg shadow-crimson-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-crimson-500/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-2.5 text-sm font-semibold text-nepal-dark transition hover:-translate-y-0.5 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-7 py-3.5 text-sm md:text-base font-semibold text-nepal-dark shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-nepal-dark transition hover:bg-slate-100;
+    @apply inline-flex items-center justify-center rounded-2xl px-5 py-3.5 text-sm md:text-base font-semibold text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-nepal-dark active:scale-[0.98];
   }
 
   .badge-booked {
-    @apply inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-600;
+    @apply inline-flex items-center rounded-full bg-rose-50 px-3 py-1.5 text-xs font-bold tracking-wide text-rose-700 ring-1 ring-inset ring-rose-600/20;
   }
 
   .badge-available {
-    @apply inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600;
+    @apply inline-flex items-center rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold tracking-wide text-emerald-700 ring-1 ring-inset ring-emerald-600/20;
   }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
 
   to {
