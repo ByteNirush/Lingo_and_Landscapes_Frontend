@@ -1,43 +1,68 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { getAdminBookings, getAdminDashboardStats, getAdminSlots } from '../utils/adminApi';
-import { formatShortDateTime } from '../utils/date';
-import { mapApiError } from '../utils/errorMapper';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  CalendarDays,
+  CheckCircle2,
+  CircleDot,
+  Inbox,
+  Users,
+} from "lucide-react";
+import {
+  getAdminDashboardStats,
+  getAdminRequests,
+  getAdminSlots,
+} from "../utils/adminApi";
+import { formatShortDateTime } from "../utils/date";
+import { mapApiError } from "../utils/errorMapper";
 
 const StatCard = ({ icon, label, value, to, color, helper }) => (
-  <Link to={to} className="card block group hover:-translate-y-1 hover:shadow-lg">
+  <Link
+    to={to}
+    className="card block group hover:-translate-y-1 hover:shadow-lg"
+  >
     <div className="flex items-start justify-between gap-4">
       <div>
         <div className="section-label mb-2">{label}</div>
-        <div className="text-4xl font-display font-bold text-nepal-dark">{value ?? '—'}</div>
+        <div className="text-4xl font-display font-bold text-nepal-dark">
+          {value ?? "—"}
+        </div>
       </div>
       <div className={`rounded-2xl p-3 text-3xl ${color}`}>{icon}</div>
     </div>
     {helper && <div className="mt-3 text-sm text-slate-500">{helper}</div>}
-    <div className="mt-4 text-xs font-semibold text-crimson-500 group-hover:underline">View details →</div>
+    <div className="mt-4 text-xs font-semibold text-crimson-500 group-hover:underline">
+      View details →
+    </div>
   </Link>
 );
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({ users: null, slots: null, bookings: null, available: null });
-  const [recentBookings, setRecentBookings] = useState([]);
+  const [stats, setStats] = useState({
+    users: null,
+    requests: null,
+    pendingRequests: null,
+    approvedRequests: null,
+    slots: null,
+    bookings: null,
+  });
+  const [recentRequests, setRecentRequests] = useState([]);
   const [recentSlots, setRecentSlots] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const [nextStats, bookings, slots] = await Promise.all([
+        const [nextStats, requests, slots] = await Promise.all([
           getAdminDashboardStats(),
-          getAdminBookings(),
+          getAdminRequests(),
           getAdminSlots(),
         ]);
         setStats(nextStats);
-        setRecentBookings(bookings.slice(0, 3));
+        setRecentRequests(requests.slice(0, 3));
         setRecentSlots(slots.slice(0, 4));
       } catch (error) {
-        toast.error(mapApiError(error, 'Failed to load dashboard stats'));
+        toast.error(mapApiError(error, "Failed to load dashboard stats"));
       } finally {
         setLoading(false);
       }
@@ -58,18 +83,27 @@ export default function AdminDashboard() {
               Platform dashboard
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-200 sm:text-base">
-              Track users, bookings, and slot availability from a clean command center built for fast admin work.
+              Track users, bookings, and slot availability from a clean command
+              center built for fast admin work.
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-              <div className="text-xs uppercase tracking-[0.18em] text-slate-300">Current focus</div>
-              <div className="mt-2 text-xl font-display font-bold">Operations overview</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-slate-300">
+                Current focus
+              </div>
+              <div className="mt-2 text-xl font-display font-bold">
+                Operations overview
+              </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl">
-              <div className="text-xs uppercase tracking-[0.18em] text-slate-300">Quick win</div>
-              <div className="mt-2 text-xl font-display font-bold">Create next slot</div>
+              <div className="text-xs uppercase tracking-[0.18em] text-slate-300">
+                Quick win
+              </div>
+              <div className="mt-2 text-xl font-display font-bold">
+                Create next slot
+              </div>
             </div>
           </div>
         </div>
@@ -77,36 +111,36 @@ export default function AdminDashboard() {
 
       <section className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          icon="👥"
+          icon={<Users size={28} aria-hidden="true" />}
           label="Total Users"
-          value={loading ? '—' : stats.users}
+          value={loading ? "—" : stats.users}
           to="/admin/users"
           color="bg-blue-50"
           helper="Registered learner accounts"
         />
         <StatCard
-          icon="📅"
-          label="Total Slots"
-          value={loading ? '—' : stats.slots}
-          to="/admin/slots"
+          icon={<Inbox size={28} aria-hidden="true" />}
+          label="Demo Requests"
+          value={loading ? "—" : stats.requests}
+          to="/admin/bookings"
           color="bg-amber-50"
-          helper="All published class sessions"
+          helper="Learner requests waiting in the queue"
         />
         <StatCard
-          icon="✅"
-          label="Bookings Made"
-          value={loading ? '—' : stats.bookings}
+          icon={<CheckCircle2 size={28} aria-hidden="true" />}
+          label="Approved Requests"
+          value={loading ? "—" : stats.approvedRequests}
           to="/admin/bookings"
           color="bg-emerald-50"
-          helper="Confirmed student reservations"
+          helper="Ready to be converted into slots"
         />
         <StatCard
-          icon="🟢"
-          label="Available Slots"
-          value={loading ? '—' : stats.available}
+          icon={<CircleDot size={28} aria-hidden="true" />}
+          label="Created Slots"
+          value={loading ? "—" : stats.slots}
           to="/admin/slots"
           color="bg-crimson-50"
-          helper="Open slots ready to book"
+          helper="Google Meet sessions sent to learners"
         />
       </section>
 
@@ -115,31 +149,50 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="section-label mb-2">Quick Actions</div>
-              <h2 className="text-2xl font-display font-bold text-nepal-dark">Management shortcuts</h2>
+              <h2 className="text-2xl font-display font-bold text-nepal-dark">
+                Management shortcuts
+              </h2>
             </div>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/admin/slots" className="btn-primary">+ Create New Slot</Link>
-            <Link to="/admin/bookings" className="btn-secondary">View All Bookings</Link>
-            <Link to="/admin/users" className="btn-ghost border border-black/10">Manage Users</Link>
+            <Link to="/admin/slots" className="btn-primary">
+              + Create Demo Slot
+            </Link>
+            <Link to="/admin/bookings" className="btn-secondary">
+              Review Requests
+            </Link>
+            <Link
+              to="/admin/users"
+              className="btn-ghost border border-black/10"
+            >
+              Manage Users
+            </Link>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
-              <div className="text-sm font-semibold text-nepal-dark">Booking ratio</div>
+              <div className="text-sm font-semibold text-nepal-dark">
+                Booking ratio
+              </div>
               <div className="mt-2 h-2 rounded-full bg-slate-100">
                 <div className="h-2 w-[68%] rounded-full bg-linear-to-r from-crimson-500 to-orange-400" />
               </div>
-              <div className="mt-2 text-xs text-slate-500">Approximate capacity utilization</div>
+              <div className="mt-2 text-xs text-slate-500">
+                Approximate requests already approved
+              </div>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white p-4">
-              <div className="text-sm font-semibold text-nepal-dark">Availability</div>
+              <div className="text-sm font-semibold text-nepal-dark">
+                Availability
+              </div>
               <div className="mt-2 h-2 rounded-full bg-slate-100">
                 <div className="h-2 w-[42%] rounded-full bg-linear-to-r from-emerald-500 to-teal-400" />
               </div>
-              <div className="mt-2 text-xs text-slate-500">Open slots waiting to be assigned</div>
+              <div className="mt-2 text-xs text-slate-500">
+                Slots created and delivered to learners
+              </div>
             </div>
           </div>
         </div>
@@ -148,7 +201,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="section-label mb-2">Recent Activity</div>
-              <h2 className="text-2xl font-display font-bold text-nepal-dark">Latest bookings and slots</h2>
+              <h2 className="text-2xl font-display font-bold text-nepal-dark">
+                Latest requests and slots
+              </h2>
             </div>
             <Link to="/admin/bookings" className="btn-ghost">
               See all
@@ -161,31 +216,47 @@ export default function AdminDashboard() {
                 <div className="h-24 animate-pulse rounded-2xl bg-slate-100" />
                 <div className="h-24 animate-pulse rounded-2xl bg-slate-100" />
               </div>
-            ) : recentBookings.length > 0 ? (
-              recentBookings.map((booking) => (
-                <div key={booking.id ?? booking._id} className="rounded-2xl border border-slate-200 bg-white p-4">
+            ) : recentRequests.length > 0 ? (
+              recentRequests.map((request) => (
+                <div
+                  key={request.id}
+                  className="rounded-2xl border border-slate-200 bg-white p-4"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="text-sm font-semibold text-nepal-dark">{booking.user?.name || booking.user?.full_name || 'Learner'}</div>
+                      <div className="text-sm font-semibold text-nepal-dark">
+                        {request.user?.name ||
+                          request.user?.full_name ||
+                          "Learner"}
+                      </div>
                       <div className="mt-1 text-xs text-slate-500">
-                        {booking.slot?.date ? formatShortDateTime(booking.slot.date) : 'Scheduled booking'}
+                        {request.preferredDate
+                          ? formatShortDateTime(request.preferredDate)
+                          : "Demo request"}
                       </div>
                     </div>
-                    <Link to="/admin/bookings" className="text-xs font-semibold text-crimson-500 hover:underline">
-                      Open
+                    <Link
+                      to="/admin/bookings"
+                      className="text-xs font-semibold text-crimson-500 hover:underline"
+                    >
+                      Review
                     </Link>
                   </div>
                 </div>
               ))
             ) : (
               <div className="rounded-2xl border border-dashed border-slate-200 bg-white px-5 py-10 text-center">
-                <div className="text-4xl">📭</div>
-                <p className="mt-3 text-sm text-slate-500">No bookings have been created yet.</p>
+                <div className="flex justify-center text-slate-400">
+                  <Inbox size={34} aria-hidden="true" />
+                </div>
+                <p className="mt-3 text-sm text-slate-500">
+                  No demo requests have been created yet.
+                </p>
               </div>
             )}
 
             <div className="pt-2">
-              <div className="section-label mb-3">Upcoming slots</div>
+              <div className="section-label mb-3">Created demo slots</div>
               <div className="space-y-3">
                 {loading ? (
                   <div className="space-y-3">
@@ -194,13 +265,22 @@ export default function AdminDashboard() {
                   </div>
                 ) : recentSlots.length > 0 ? (
                   recentSlots.map((slot) => (
-                    <div key={slot.id ?? slot._id} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                    <div
+                      key={slot.id ?? slot._id}
+                      className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3"
+                    >
                       <div>
-                        <div className="text-sm font-semibold text-nepal-dark">{formatShortDateTime(slot.date)}</div>
-                        <div className="mt-1 text-xs text-slate-500">{slot.time}</div>
+                        <div className="text-sm font-semibold text-nepal-dark">
+                          {formatShortDateTime(slot.date)}
+                        </div>
+                        <div className="mt-1 text-xs text-slate-500">
+                          {slot.time}
+                        </div>
                       </div>
-                      <span className={`text-xs font-semibold ${slot.isBooked ? 'text-rose-600' : 'text-emerald-600'}`}>
-                        {slot.isBooked ? 'Booked' : 'Open'}
+                      <span
+                        className={`text-xs font-semibold ${slot.isBooked ? "text-rose-600" : "text-emerald-600"}`}
+                      >
+                        {slot.isBooked ? "Booked" : "Open"}
                       </span>
                     </div>
                   ))

@@ -1,13 +1,22 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { signup } from '../utils/authApi';
-import { mapApiError } from '../utils/errorMapper';
-import { useAuth } from '../context/AuthContext';
-import logo from '../assets/logo.png';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 const EyeIcon = ({ visible }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="text-slate-400"
+  >
     {visible ? (
       <>
         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
@@ -26,12 +35,12 @@ const EyeIcon = ({ visible }) => (
 
 export default function SignupPage() {
   const [form, setForm] = useState({
-    full_name: '',
-    email: '',
-    country: '',
-    passport_number: '',
-    password: '',
-    confirm_password: '',
+    full_name: "",
+    email: "",
+    country: "",
+    passport_number: "",
+    password: "",
+    confirm_password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -39,25 +48,35 @@ export default function SignupPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirm_password) {
-      return toast.error('Passwords do not match');
+      return toast.error("Passwords do not match");
     }
     if (form.password.length < 8) {
-      return toast.error('Password must be at least 8 characters');
+      return toast.error("Password must be at least 8 characters");
     }
     setLoading(true);
     try {
-      const authData = await signup(form);
+      const fakeUser = {
+        id: `user-${Date.now()}`,
+        full_name: form.full_name,
+        name: form.full_name,
+        email: form.email,
+        role: "user",
+        country: form.country,
+        passport_number: form.passport_number,
+      };
+      const fakeToken = "fake-jwt-token";
 
-      login(authData.user, authData.token);
-      toast.success('Account created! Welcome aboard 🎉');
-      navigate('/dashboard');
+      login(fakeUser, fakeToken);
+      toast.success("Account created! Welcome aboard 🎉");
+      navigate("/dashboard");
     } catch (err) {
-      toast.error(mapApiError(err, 'Signup failed'));
+      toast.error("Signup failed");
     } finally {
       setLoading(false);
     }
@@ -68,16 +87,26 @@ export default function SignupPage() {
       <div className="w-full max-w-md">
         <div className="mb-10 text-center">
           <div className="mb-4 flex justify-center">
-            <img src={logo} alt="Lingo Landscape Logo" className="h-12 w-auto" />
+            <img
+              src={logo}
+              alt="Lingo Landscape Logo"
+              className="h-12 w-auto"
+            />
           </div>
-          <h1 className="mb-3 text-3xl md:text-4xl font-display font-bold text-nepal-dark tracking-tight">Start learning Nepali</h1>
-          <p className="text-slate-500 font-medium">Create your free account and book your first class</p>
+          <h1 className="mb-3 text-3xl md:text-4xl font-display font-bold text-nepal-dark tracking-tight">
+            Start learning Nepali
+          </h1>
+          <p className="text-slate-500 font-medium">
+            Create your free account and book your first class
+          </p>
         </div>
 
         <div className="glass-panel p-8 md:p-10">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Full Name</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Full Name
+              </label>
               <input
                 type="text"
                 name="full_name"
@@ -90,7 +119,9 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Country</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Country
+              </label>
               <input
                 type="text"
                 name="country"
@@ -103,7 +134,9 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Passport Number</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Passport Number
+              </label>
               <input
                 type="text"
                 name="passport_number"
@@ -116,7 +149,9 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Email address</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Email address
+              </label>
               <input
                 type="email"
                 name="email"
@@ -128,10 +163,12 @@ export default function SignupPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Password</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Password
+              </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={form.password}
                   onChange={handleChange}
@@ -143,17 +180,19 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-600"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   <EyeIcon visible={showPassword} />
                 </button>
               </div>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Confirm Password</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Confirm Password
+              </label>
               <div className="relative">
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirm_password"
                   value={form.confirm_password}
                   onChange={handleChange}
@@ -165,26 +204,39 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-600"
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  aria-label={
+                    showConfirmPassword ? "Hide password" : "Show password"
+                  }
                 >
                   <EyeIcon visible={showConfirmPassword} />
                 </button>
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary mt-2 w-full py-3 text-base">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary mt-2 w-full py-3 text-base"
+            >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Creating account…
                 </span>
-              ) : 'Create Account'}
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
-            Already have an account?{' '}
-            <Link to="/login" className="text-crimson-500 font-semibold hover:underline">Sign in</Link>
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-crimson-500 font-semibold hover:underline"
+            >
+              Sign in
+            </Link>
           </p>
         </div>
       </div>

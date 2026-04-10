@@ -1,105 +1,184 @@
-import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
-import api from '../utils/api';
-import SlotCard from '../components/SlotCard';
+import { useState } from "react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import MultiStepBookingForm from "../components/MultiStepBookingForm";
+
+const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const toDateKey = (value) => {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function SlotsPage() {
-  const [slots, setSlots] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [bookingId, setBookingId] = useState(null);
-  const [filter, setFilter] = useState('all'); // 'all' | 'available' | 'booked'
-
-  const fetchSlots = async () => {
-    try {
-      const { data } = await api.get('/slots');
-      setSlots(data.slots);
-    } catch {
-      toast.error('Failed to load slots');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { fetchSlots(); }, []);
-
-  const handleBook = async (slotId) => {
-    setBookingId(slotId);
-    try {
-      await api.post('/bookings', { slotId });
-      toast.success('🎉 Slot booked! Check My Bookings for your Meet link.');
-      fetchSlots();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Booking failed');
-    } finally {
-      setBookingId(null);
-    }
-  };
-
-  const filtered = slots.filter((s) => {
-    if (filter === 'available') return !s.isBooked;
-    if (filter === 'booked') return s.isBooked;
-    return true;
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  const available = slots.filter((s) => !s.isBooked).length;
+  const monthYearLabel = currentMonth.toLocaleString(undefined, {
+    month: "long",
+    year: "numeric",
+  });
+  const monthStart = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth(),
+    1,
+  );
+  const monthEnd = new Date(
+    currentMonth.getFullYear(),
+    currentMonth.getMonth() + 1,
+    0,
+  );
+  const leadingBlanks = monthStart.getDay();
+  const daysInMonth = monthEnd.getDate();
+  const monthCells = [
+    ...Array.from({ length: leadingBlanks }, (_, i) => ({
+      key: `blank-${i}`,
+      isBlank: true,
+    })),
+    ...Array.from({ length: daysInMonth }, (_, i) => {
+      const date = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth(),
+        i + 1,
+      );
+      const key = toDateKey(date);
+      return {
+        key,
+        day: i + 1,
+        isToday: key === toDateKey(new Date()),
+        isSelected: key === selectedDate,
+      };
+    }),
+  ];
 
   return (
     <div className="fade-in shell py-12 md:py-16">
       <section className="glass-panel mb-8 p-6 md:p-7">
-        <div className="section-label mb-2">Available Sessions</div>
+        <div className="section-label mb-2">Demo Requests</div>
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h1 className="page-title">Book a Class</h1>
+            <h1 className="page-title">Request a Demo Class</h1>
             <p className="mt-1.5 text-slate-500">
-              {loading ? 'Loading slots...' : `${available} slot${available !== 1 ? 's' : ''} ready to book`}
+              Pick a date, complete the request form, and wait for the tutor to
+              create your slot.
             </p>
           </div>
+        </div>
 
-          <div className="self-start rounded-xl border border-slate-200 bg-white p-1 shadow-sm sm:self-auto">
-            <div className="flex gap-1">
-              {['all', 'available', 'booked'].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className={`rounded-lg px-4 py-1.5 text-sm font-semibold capitalize transition ${filter === f ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100 hover:text-nepal-dark'
-                    }`}
-                >
-                  {f}
-                </button>
-              ))}
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-nepal-dark">
+              <CalendarDays size={16} aria-hidden="true" />
+              Browse by date
             </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() =>
+                  setCurrentMonth(
+                    (prev) =>
+                      new Date(prev.getFullYear(), prev.getMonth() - 1, 1),
+                  )
+                }
+                className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-nepal-dark"
+                aria-label="Previous month"
+              >
+                <ChevronLeft size={16} aria-hidden="true" />
+              </button>
+              <div className="min-w-40 text-center text-sm font-semibold text-nepal-dark">
+                {monthYearLabel}
+              </div>
+              <button
+                onClick={() =>
+                  setCurrentMonth(
+                    (prev) =>
+                      new Date(prev.getFullYear(), prev.getMonth() + 1, 1),
+                  )
+                }
+                className="cursor-pointer rounded-lg border border-slate-200 p-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-nepal-dark"
+                aria-label="Next month"
+              >
+                <ChevronRight size={16} aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-2 grid grid-cols-7 gap-1 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+            {weekDays.map((day) => (
+              <div key={day}>{day}</div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1">
+            {monthCells.map((cell) => {
+              if (cell.isBlank) {
+                return <div key={cell.key} className="h-12 rounded-lg" />;
+              }
+
+              return (
+                <button
+                  key={cell.key}
+                  onClick={() =>
+                    setSelectedDate(cell.key === selectedDate ? null : cell.key)
+                  }
+                  className={`cursor-pointer relative h-12 rounded-lg border text-sm font-medium transition ${
+                    cell.isSelected
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-crimson-200 bg-crimson-50 text-nepal-dark hover:bg-crimson-100"
+                  } ${cell.isToday && !cell.isSelected ? "ring-1 ring-slate-300" : ""}`}
+                  title={cell.isSelected ? "Selected date" : "Select date"}
+                >
+                  {cell.day}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <button
+              onClick={() => {
+                setSelectedDate(null);
+                setCurrentMonth(
+                  new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+                );
+              }}
+              className="cursor-pointer rounded-md border border-slate-200 px-2.5 py-1 font-semibold text-slate-600 transition hover:bg-slate-100"
+            >
+              Reset date
+            </button>
+            {selectedDate ? (
+              <span>Showing demo request for {selectedDate}</span>
+            ) : (
+              <span>Choose a date to start your demo request</span>
+            )}
           </div>
         </div>
       </section>
 
-      {loading ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="card animate-pulse">
-              <div className="mb-4 h-3 w-24 rounded bg-black/10" />
-              <div className="mb-2 h-5 w-3/4 rounded bg-black/10" />
-              <div className="h-4 bg-black/5 rounded w-1/2" />
-            </div>
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="card-soft py-24 text-center">
-          <div className="mb-4 text-5xl">📅</div>
+      {selectedDate && (
+        <section className="mb-8">
+          <MultiStepBookingForm
+            selectedDate={selectedDate}
+            onChangeDate={(nextDate) => setSelectedDate(nextDate)}
+          />
+        </section>
+      )}
+
+      {!selectedDate && (
+        <div className="card-soft py-16 text-center">
           <h2 className="mb-2 text-xl font-display font-bold text-nepal-dark">
-            {filter === 'available' ? 'No available slots right now' : 'No slots found'}
+            Request a demo class
           </h2>
-          <p className="text-sm text-slate-500">Check back later or contact your instructor.</p>
-        </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((slot) => (
-            <SlotCard
-              key={slot.id ?? slot._id}
-              slot={slot}
-              onBook={!slot.isBooked ? handleBook : null}
-              booking={bookingId === (slot.id ?? slot._id)}
-            />
-          ))}
+          <p className="text-sm text-slate-500">
+            Select your preferred date above, then complete the quick demo
+            request form.
+          </p>
         </div>
       )}
     </div>

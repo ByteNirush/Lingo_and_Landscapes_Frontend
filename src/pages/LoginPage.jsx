@@ -1,13 +1,22 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { signin } from '../utils/authApi';
-import { mapApiError } from '../utils/errorMapper';
-import { useAuth } from '../context/AuthContext';
-import logo from '../assets/logo.png';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 const EyeIcon = ({ visible }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="text-slate-400"
+  >
     {visible ? (
       <>
         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
@@ -25,34 +34,35 @@ const EyeIcon = ({ visible }) => (
 );
 
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const authData = await signin(form);
-      const normalizedLoginEmail = form.email.trim().toLowerCase();
-      const normalizedUserEmail = (authData.user.email || '').trim().toLowerCase();
-      const isAdmin =
-        authData.user.role === 'admin' ||
-        normalizedLoginEmail === 'admin@lingolandscape.com' ||
-        normalizedUserEmail === 'admin@lingolandscape.com';
-      const normalizedUser = isAdmin
-        ? { ...authData.user, role: 'admin' }
-        : authData.user;
-
-      login(normalizedUser, authData.token);
-      toast.success(`Welcome back, ${normalizedUser.full_name}!`);
-      navigate(isAdmin ? '/admin' : '/dashboard');
-    } catch (err) {
-      toast.error(mapApiError(err, 'Signin failed'));
+      const fakeUser = {
+        id: 1,
+        full_name: "alex Sunar",
+        email: form.email,
+        role:
+          form.email === "admin@test.com" && form.password === "1234"
+            ? "admin"
+            : "user",
+      };
+      const fakeToken = "fake-jwt-token";
+      const isAdmin = fakeUser.role === "admin";
+      login(fakeUser, fakeToken);
+      toast.success(`Welcome back, ${fakeUser.full_name}!`);
+      navigate(isAdmin ? "/admin" : "/dashboard");
+    } catch {
+      toast.error("Signin failed");
     } finally {
       setLoading(false);
     }
@@ -63,16 +73,26 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-10 text-center">
           <div className="mb-4 flex justify-center">
-            <img src={logo} alt="Lingo Landscape Logo" className="h-12 w-auto" />
+            <img
+              src={logo}
+              alt="Lingo Landscape Logo"
+              className="h-16 w-auto md:h-20"
+            />
           </div>
-          <h1 className="mb-3 text-3xl md:text-4xl font-display font-bold text-nepal-dark tracking-tight">Welcome back</h1>
-          <p className="text-slate-500 font-medium">Sign in to continue your Nepali journey</p>
+          <h1 className="mb-3 text-3xl md:text-4xl font-display font-bold text-nepal-dark tracking-tight">
+            Welcome back
+          </h1>
+          <p className="text-slate-500 font-medium">
+            Sign in to continue your Nepali journey
+          </p>
         </div>
 
         <div className="glass-panel p-8 md:p-10">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Email address</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Email address
+              </label>
               <input
                 type="email"
                 name="email"
@@ -84,10 +104,12 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">Password</label>
+              <label className="mb-1.5 block text-sm font-semibold text-nepal-dark">
+                Password
+              </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={form.password}
                   onChange={handleChange}
@@ -99,26 +121,37 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-600"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   <EyeIcon visible={showPassword} />
                 </button>
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary mt-2 w-full py-3 text-base">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary mt-2 w-full py-3 text-base"
+            >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Signing in…
                 </span>
-              ) : 'Sign In'}
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-crimson-500 font-semibold hover:underline">Create one free</Link>
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="text-crimson-500 font-semibold hover:underline"
+            >
+              Create one free
+            </Link>
           </p>
         </div>
 
