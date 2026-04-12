@@ -1,3 +1,6 @@
+// src/components/MultiStepBookingForm.jsx
+// Only change from original: submitForApproval is now async (submitDemoRequest returns a Promise)
+
 import { useState } from "react";
 import {
   CloudSun,
@@ -14,18 +17,16 @@ import { formatLongDate } from "../utils/date";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import { submitDemoRequest } from "../utils/demoWorkflowStore";
+import { useNavigate } from "react-router-dom";
 
 const TOTAL_STEPS = 5;
-
 const LEVEL_OPTIONS = ["Beginner", "Elementary", "Intermediate", "Advanced"];
-
 const EXPERIENCE_OPTIONS = [
   "No previous experience",
   "Self-study only",
   "Took classes before",
   "Lived or studied in Nepal",
 ];
-
 const FOCUS_OPTIONS = [
   "Speaking confidence",
   "Listening comprehension",
@@ -34,7 +35,6 @@ const FOCUS_OPTIONS = [
   "Pronunciation",
   "Grammar and vocabulary",
 ];
-
 const GOAL_OPTIONS = [
   {
     label: "Conversation",
@@ -67,9 +67,7 @@ const GOAL_OPTIONS = [
     bgColor: "bg-green-100",
   },
 ];
-
 const DURATION_OPTIONS = ["30 min", "45 min", "60 min"];
-
 const AVAILABILITY_WINDOWS = [
   {
     key: "early-morning",
@@ -77,26 +75,10 @@ const AVAILABILITY_WINDOWS = [
     range: "4am - 8am",
     Icon: Sunrise,
   },
-  {
-    key: "morning",
-    label: "Morning",
-    range: "9am - 11am",
-    Icon: CloudSun,
-  },
-  {
-    key: "afternoon",
-    label: "Afternoon",
-    range: "12pm - 6pm",
-    Icon: Sun,
-  },
-  {
-    key: "evening",
-    label: "Evening",
-    range: "7pm - 3am",
-    Icon: Moon,
-  },
+  { key: "morning", label: "Morning", range: "9am - 11am", Icon: CloudSun },
+  { key: "afternoon", label: "Afternoon", range: "12pm - 6pm", Icon: Sun },
+  { key: "evening", label: "Evening", range: "7pm - 3am", Icon: Moon },
 ];
-
 const DAYS_OPTIONS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const createInitialForm = (selectedDate) => ({
@@ -112,7 +94,6 @@ const createInitialForm = (selectedDate) => ({
 });
 
 const formatCurrency = (value) => `$${Number(value).toFixed(0)}`;
-
 const MIN_BUDGET = 15;
 const MAX_BUDGET = 120;
 const DEFAULT_BUDGET = 40;
@@ -125,120 +106,104 @@ const getBudgetPercent = (value) => {
 
 export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [showSummary, setShowSummary] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [budgetTouched, setBudgetTouched] = useState(false);
   const [formData, setFormData] = useState(() =>
     createInitialForm(selectedDate),
   );
   const preferredDateValue = selectedDate || formData.preferredDate || "";
 
-  const updateField = (field, value) => {
-    setFormData((current) => ({
-      ...current,
-      [field]: value,
-    }));
-  };
+  const updateField = (field, value) =>
+    setFormData((cur) => ({ ...cur, [field]: value }));
 
-  const toggleFocus = (focus) => {
-    setFormData((current) => ({
-      ...current,
-      focus: current.focus.includes(focus)
-        ? current.focus.filter((item) => item !== focus)
-        : [...current.focus, focus],
+  const toggleFocus = (focus) =>
+    setFormData((cur) => ({
+      ...cur,
+      focus: cur.focus.includes(focus)
+        ? cur.focus.filter((i) => i !== focus)
+        : [...cur.focus, focus],
     }));
-  };
 
-  const toggleListValue = (field, value) => {
-    setFormData((current) => ({
-      ...current,
-      [field]: current[field].includes(value)
-        ? current[field].filter((item) => item !== value)
-        : [...current[field], value],
+  const toggleListValue = (field, value) =>
+    setFormData((cur) => ({
+      ...cur,
+      [field]: cur[field].includes(value)
+        ? cur[field].filter((i) => i !== value)
+        : [...cur[field], value],
     }));
-  };
 
   const isStepComplete = (step) => {
-    if (step === 1) {
-      return formData.level && formData.focus.length > 0;
-    }
-
-    if (step === 2) {
-      return Boolean(formData.goal);
-    }
-
-    if (step === 3) {
+    if (step === 1) return formData.level && formData.focus.length > 0;
+    if (step === 2) return Boolean(formData.goal);
+    if (step === 3)
       return Boolean(
         preferredDateValue &&
         formData.availabilityWindows.length > 0 &&
         formData.availabilityDays.length > 0,
       );
-    }
-
-    if (step === 4) {
-      return Boolean(formData.duration);
-    }
-
-    if (step === 5) {
+    if (step === 4) return Boolean(formData.duration);
+    if (step === 5)
       return (
         budgetTouched &&
         formData.budget !== null &&
         formData.budget !== undefined
       );
-    }
-
     return false;
   };
 
   const goNext = () => {
     if (currentStep < TOTAL_STEPS) {
-      setCurrentStep((step) => step + 1);
+      setCurrentStep((s) => s + 1);
       toast.success("Step completed");
       return;
     }
-
     setShowSummary(true);
     toast.success("Step completed");
   };
-
   const goBack = () => {
     if (showSummary) {
       setShowSummary(false);
       setCurrentStep(TOTAL_STEPS);
       return;
     }
-
-    setCurrentStep((step) => Math.max(1, step - 1));
+    setCurrentStep((s) => Math.max(1, s - 1));
   };
-
   const skipStep = () => {
-    if (currentStep < TOTAL_STEPS) {
-      setCurrentStep((step) => step + 1);
-    } else {
-      setShowSummary(true);
-    }
-
+    if (currentStep < TOTAL_STEPS) setCurrentStep((s) => s + 1);
+    else setShowSummary(true);
     toast("Step skipped");
   };
 
-  const submitForApproval = () => {
-    submitDemoRequest(
-      {
-        level: formData.level,
-        experience: formData.experience,
-        focus: formData.focus,
-        goal: formData.goal,
-        preferredDate: preferredDateValue,
-        availabilityWindows: formData.availabilityWindows,
-        availabilityDays: formData.availabilityDays,
-        duration: formData.duration,
-        budget: formData.budget ?? DEFAULT_BUDGET,
-      },
-      user,
-    );
-    setSubmitted(true);
-    toast.success("Demo request submitted");
+  // ── ONLY CHANGE: now async, awaits the API call ───────────
+  const submitForApproval = async () => {
+    setSubmitting(true);
+    try {
+      await submitDemoRequest(
+        {
+          level: formData.level,
+          experience: formData.experience,
+          focus: formData.focus,
+          goal: formData.goal,
+          preferredDate: preferredDateValue,
+          availabilityWindows: formData.availabilityWindows,
+          availabilityDays: formData.availabilityDays,
+          duration: formData.duration,
+          budget: formData.budget ?? DEFAULT_BUDGET,
+        },
+        user,
+      );
+      setSubmitted(true);
+      toast.success("Demo request submitted");
+      navigate("/my-bookings");
+    } catch {
+      toast.error("Failed to submit request. Is JSON Server running?");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const budgetValue = formData.budget ?? DEFAULT_BUDGET;
@@ -246,10 +211,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
   const rangeMaxUsd = formatCurrency(Math.min(MAX_BUDGET, budgetValue + 30));
   const averageUsd = formatCurrency(budgetValue);
   const availabilityWindowLabels = formData.availabilityWindows
-    .map(
-      (key) =>
-        AVAILABILITY_WINDOWS.find((window) => window.key === key)?.label || key,
-    )
+    .map((key) => AVAILABILITY_WINDOWS.find((w) => w.key === key)?.label || key)
     .join(", ");
 
   if (submitted) {
@@ -308,22 +270,17 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               Check every detail before sending your demo request to a tutor.
             </p>
           )}
-
           {!showSummary && (
             <div className="mt-3 flex items-center gap-1.5">
-              {Array.from({ length: TOTAL_STEPS }, (_, index) => {
-                const stepIndex = index + 1;
-                return (
-                  <div
-                    key={stepIndex}
-                    className={`h-1.5 w-8 rounded-full ${stepIndex <= currentStep ? "bg-crimson-500" : "bg-slate-200"}`}
-                  />
-                );
-              })}
+              {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+                <div
+                  key={i + 1}
+                  className={`h-1.5 w-8 rounded-full ${i + 1 <= currentStep ? "bg-crimson-500" : "bg-slate-200"}`}
+                />
+              ))}
             </div>
           )}
         </div>
-
         <div className="rounded-2xl border border-crimson-100 bg-linear-to-br from-crimson-50 via-orange-50 to-amber-50 px-4 py-3 text-right shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Selected date
@@ -346,11 +303,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               {LEVEL_OPTIONS.map((option) => (
                 <label
                   key={option}
-                  className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                    formData.level === option
-                      ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm"
-                      : "border-slate-200 bg-white text-nepal-dark hover:border-slate-300 hover:bg-slate-50"
-                  }`}
+                  className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm font-semibold transition ${formData.level === option ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm" : "border-slate-200 bg-white text-nepal-dark hover:border-slate-300 hover:bg-slate-50"}`}
                 >
                   <input
                     type="radio"
@@ -365,7 +318,6 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               ))}
             </div>
           </div>
-
           <div>
             <div className="mb-3 text-sm font-semibold text-nepal-dark">
               Previous experience
@@ -374,11 +326,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               {EXPERIENCE_OPTIONS.map((option) => (
                 <label
                   key={option}
-                  className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm transition ${
-                    formData.experience === option
-                      ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                  }`}
+                  className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm transition ${formData.experience === option ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"}`}
                 >
                   <input
                     type="radio"
@@ -393,7 +341,6 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               ))}
             </div>
           </div>
-
           <div>
             <div className="mb-3 text-sm font-semibold text-nepal-dark">
               Learning focus
@@ -402,11 +349,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               {FOCUS_OPTIONS.map((option) => (
                 <label
                   key={option}
-                  className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm transition ${
-                    formData.focus.includes(option)
-                      ? "border-crimson-400 bg-crimson-50 text-nepal-dark shadow-sm"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-                  }`}
+                  className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm transition ${formData.focus.includes(option) ? "border-crimson-400 bg-crimson-50 text-nepal-dark shadow-sm" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"}`}
                 >
                   <input
                     type="checkbox"
@@ -429,11 +372,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
             return (
               <label
                 key={goal.label}
-                className={`cursor-pointer rounded-2xl border px-4 py-4 transition ${
-                  formData.goal === goal.label
-                    ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm"
-                    : "border-slate-200 bg-white text-nepal-dark hover:border-slate-300 hover:bg-slate-50"
-                }`}
+                className={`cursor-pointer rounded-2xl border px-4 py-4 transition ${formData.goal === goal.label ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm" : "border-slate-200 bg-white text-nepal-dark hover:border-slate-300 hover:bg-slate-50"}`}
               >
                 <input
                   type="radio"
@@ -481,14 +420,13 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
             <input
               type="date"
               value={preferredDateValue}
-              onChange={(event) => {
-                updateField("preferredDate", event.target.value);
-                if (onChangeDate) onChangeDate(event.target.value);
+              onChange={(e) => {
+                updateField("preferredDate", e.target.value);
+                if (onChangeDate) onChangeDate(e.target.value);
               }}
               className="mt-3 w-full max-w-xs rounded-xl border border-slate-200 px-4 py-3 outline-none transition focus:border-crimson-400 focus:ring-2 focus:ring-crimson-100"
             />
           </div>
-
           <div className="mx-auto max-w-2xl">
             <div className="mb-3 text-sm font-semibold text-nepal-dark">
               Times
@@ -497,11 +435,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               {AVAILABILITY_WINDOWS.map((window) => (
                 <label
                   key={window.key}
-                  className={`cursor-pointer rounded-xl border px-4 py-3 text-center text-sm transition ${
-                    formData.availabilityWindows.includes(window.key)
-                      ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-                  }`}
+                  className={`cursor-pointer rounded-xl border px-4 py-3 text-center text-sm transition ${formData.availabilityWindows.includes(window.key) ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"}`}
                 >
                   <input
                     type="checkbox"
@@ -521,7 +455,6 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
                 </label>
               ))}
             </div>
-
             <div className="mt-5">
               <div className="mb-3 text-sm font-semibold text-nepal-dark">
                 Days
@@ -532,11 +465,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
                     key={day}
                     type="button"
                     onClick={() => toggleListValue("availabilityDays", day)}
-                    className={`cursor-pointer border-r border-slate-200 px-2 py-2 text-xs font-semibold transition last:border-r-0 ${
-                      formData.availabilityDays.includes(day)
-                        ? "bg-crimson-100 text-crimson-700"
-                        : "bg-white text-slate-600 hover:bg-slate-50"
-                    }`}
+                    className={`cursor-pointer border-r border-slate-200 px-2 py-2 text-xs font-semibold transition last:border-r-0 ${formData.availabilityDays.includes(day) ? "bg-crimson-100 text-crimson-700" : "bg-white text-slate-600 hover:bg-slate-50"}`}
                   >
                     {day}
                   </button>
@@ -552,11 +481,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
           {DURATION_OPTIONS.map((option) => (
             <label
               key={option}
-              className={`cursor-pointer rounded-2xl border px-4 py-4 text-center text-sm font-semibold transition ${
-                formData.duration === option
-                  ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm"
-                  : "border-slate-200 bg-white text-nepal-dark hover:border-slate-300 hover:bg-slate-50"
-              }`}
+              className={`cursor-pointer rounded-2xl border px-4 py-4 text-center text-sm font-semibold transition ${formData.duration === option ? "border-crimson-300 bg-crimson-50 text-nepal-dark shadow-sm" : "border-slate-200 bg-white text-nepal-dark hover:border-slate-300 hover:bg-slate-50"}`}
             >
               <input
                 type="radio"
@@ -577,7 +502,6 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
           <div className="text-sm font-semibold uppercase tracking-wide text-slate-500">
             What's your budget?
           </div>
-
           <div>
             <div className="text-3xl font-display font-bold text-nepal-dark">
               {rangeMinUsd} - {rangeMaxUsd}
@@ -586,7 +510,6 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               Average: {averageUsd}
             </div>
           </div>
-
           <div className="mx-auto max-w-md px-3">
             <input
               type="range"
@@ -594,9 +517,9 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               max={MAX_BUDGET}
               step="5"
               value={budgetValue}
-              onChange={(event) => {
+              onChange={(e) => {
                 if (!budgetTouched) setBudgetTouched(true);
-                updateField("budget", Number(event.target.value));
+                updateField("budget", Number(e.target.value));
               }}
               className="h-1.5 w-full cursor-pointer appearance-none rounded-full"
               style={{
@@ -604,10 +527,8 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               }}
             />
           </div>
-
           <div className="text-xs text-slate-400">
-            Select a comfortable session range in USD. We'll match tutor options
-            accordingly.
+            Select a comfortable session range in USD.
           </div>
         </div>
       )}
@@ -632,7 +553,7 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               label="Preferred date & time"
               value={
                 preferredDateValue
-                  ? `${formatLongDate(preferredDateValue)} · ${availabilityWindowLabels || "No time selected"} · ${formData.availabilityDays.length ? formData.availabilityDays.join(", ") : "No day selected"}`
+                  ? `${formatLongDate(preferredDateValue)} · ${availabilityWindowLabels || "No time"} · ${formData.availabilityDays.join(", ") || "No day"}`
                   : "Not provided"
               }
             />
@@ -656,7 +577,6 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
         >
           Back
         </button>
-
         <div className="flex flex-wrap items-center gap-3">
           {!showSummary && (
             <button
@@ -666,13 +586,20 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
               Skip this step
             </button>
           )}
-
           {showSummary ? (
             <button
               onClick={submitForApproval}
-              className="cursor-pointer rounded-xl bg-linear-to-r from-crimson-600 to-orange-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-crimson-700 hover:to-orange-600"
+              disabled={submitting}
+              className="cursor-pointer rounded-xl bg-linear-to-r from-crimson-600 to-orange-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-crimson-700 hover:to-orange-600 disabled:opacity-60"
             >
-              Submit Demo Request
+              {submitting ? (
+                <span className="flex items-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Submitting…
+                </span>
+              ) : (
+                "Submit Demo Request"
+              )}
             </button>
           ) : (
             isStepComplete(currentStep) && (

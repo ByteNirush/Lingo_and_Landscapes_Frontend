@@ -21,7 +21,7 @@ const RequestPill = ({ request, onUse }) => (
   <button
     type="button"
     onClick={() => onUse(request)}
-    className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-crimson-200 hover:shadow-md"
+    className="w-full cursor-pointer rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:-translate-y-0.5 hover:border-crimson-200 hover:shadow-md"
   >
     <div className="flex items-start justify-between gap-3">
       <div>
@@ -48,20 +48,24 @@ export default function AdminSlots() {
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const fetchData = () => {
-    setSlots(getAdminSlots());
-    setApprovedRequests(getApprovedDemoRequests());
-    setLoading(false);
+  const fetchData = async () => {
+    try {
+      const [slots, approvedRequests] = await Promise.all([
+        getAdminSlots(),
+        getApprovedDemoRequests(),
+      ]);
+      setSlots(slots);
+      setApprovedRequests(approvedRequests);
+    } catch (err) {
+      console.error("Failed to load slots", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchData();
-    const handleWorkflowUpdate = () => fetchData();
-    window.addEventListener("demo-workflow-updated", handleWorkflowUpdate);
-    return () =>
-      window.removeEventListener("demo-workflow-updated", handleWorkflowUpdate);
   }, []);
-
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -81,7 +85,7 @@ export default function AdminSlots() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      createDemoSlot({
+      await createDemoSlot({
         requestId: form.requestId || null,
         date: form.date,
         time: form.time,
@@ -102,7 +106,7 @@ export default function AdminSlots() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this slot?")) return;
     try {
-      deleteAdminSlot(id);
+      await deleteAdminSlot(id);
       toast.success("Slot deleted");
       fetchData();
     } catch (error) {

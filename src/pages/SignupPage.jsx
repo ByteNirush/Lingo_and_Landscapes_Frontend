@@ -1,3 +1,6 @@
+// src/pages/SignupPage.jsx
+// Only change: handleSubmit calls devRegister() instead of building fakeUser.
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -45,7 +48,7 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { devRegister } = useAuth(); // ← uses JSON Server
   const navigate = useNavigate();
 
   const handleChange = (e) =>
@@ -53,30 +56,24 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.password !== form.confirm_password) {
+    if (form.password !== form.confirm_password)
       return toast.error("Passwords do not match");
-    }
-    if (form.password.length < 8) {
+    if (form.password.length < 8)
       return toast.error("Password must be at least 8 characters");
-    }
+
     setLoading(true);
     try {
-      const fakeUser = {
-        id: `user-${Date.now()}`,
+      const user = await devRegister({
         full_name: form.full_name,
-        name: form.full_name,
         email: form.email,
-        role: "user",
+        password: form.password,
         country: form.country,
         passport_number: form.passport_number,
-      };
-      const fakeToken = "fake-jwt-token";
-
-      login(fakeUser, fakeToken);
+      });
       toast.success("Account created! Welcome aboard 🎉");
       navigate("/dashboard");
     } catch (err) {
-      toast.error("Signup failed");
+      toast.error(err.message || "Signup failed");
     } finally {
       setLoading(false);
     }
@@ -172,7 +169,7 @@ export default function SignupPage() {
                   name="password"
                   value={form.password}
                   onChange={handleChange}
-                  placeholder="Min. 8 chars with upper/lower/number/special"
+                  placeholder="Min. 8 chars"
                   required
                   className="input-field pr-10"
                 />
@@ -180,7 +177,6 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-600"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   <EyeIcon visible={showPassword} />
                 </button>
@@ -204,9 +200,6 @@ export default function SignupPage() {
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 transition hover:text-slate-600"
-                  aria-label={
-                    showConfirmPassword ? "Hide password" : "Show password"
-                  }
                 >
                   <EyeIcon visible={showConfirmPassword} />
                 </button>

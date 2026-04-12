@@ -1,3 +1,8 @@
+// src/pages/LoginPage.jsx
+// Only change from original: handleSubmit now calls devLogin() from AuthContext
+// instead of building a fakeUser manually.
+// When real backend is ready: swap devLogin → signin from authApi, same shape.
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -37,7 +42,7 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { devLogin } = useAuth(); // ← uses JSON Server
   const navigate = useNavigate();
 
   const handleChange = (e) =>
@@ -47,22 +52,11 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const fakeUser = {
-        id: 1,
-        full_name: "alex Sunar",
-        email: form.email,
-        role:
-          form.email === "admin@test.com" && form.password === "1234"
-            ? "admin"
-            : "user",
-      };
-      const fakeToken = "fake-jwt-token";
-      const isAdmin = fakeUser.role === "admin";
-      login(fakeUser, fakeToken);
-      toast.success(`Welcome back, ${fakeUser.full_name}!`);
-      navigate(isAdmin ? "/admin" : "/dashboard");
-    } catch {
-      toast.error("Signin failed");
+      const user = await devLogin(form.email, form.password);
+      toast.success(`Welcome back, ${user.full_name}!`);
+      navigate(user.role === "admin" ? "/admin" : "/dashboard");
+    } catch (err) {
+      toast.error(err.message || "Signin failed");
     } finally {
       setLoading(false);
     }

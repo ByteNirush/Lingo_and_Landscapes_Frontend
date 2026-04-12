@@ -64,18 +64,24 @@ export default function MyBookingsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = () => {
-      setBookings(getUserBookings(user));
-      setRequests(getUserRequests(user));
-      setLoading(false);
+    if (!user) return;
+
+    const load = async () => {
+      try {
+        const [bookings, requests] = await Promise.all([
+          getUserBookings(user),
+          getUserRequests(user),
+        ]);
+        setBookings(bookings);
+        setRequests(requests);
+      } catch (err) {
+        console.error("Failed to load bookings", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     load();
-
-    const handleWorkflowUpdate = () => load();
-    window.addEventListener("demo-workflow-updated", handleWorkflowUpdate);
-    return () =>
-      window.removeEventListener("demo-workflow-updated", handleWorkflowUpdate);
   }, [user]);
 
   const pendingRequests = requests.filter(

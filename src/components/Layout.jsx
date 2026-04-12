@@ -14,16 +14,17 @@ const publicNavItems = [
 const learnerNavItems = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/slots", label: "Request Demo Class" },
+  { to: "/visa-services", label: "Visa Help" },
   { to: "/my-bookings", label: "My Bookings" },
-  { to: "/profile", label: "Profile" },
+  { to: "/my-visa-requests", label: "My Visa Requests" },
 ];
 
 const adminNavItems = [
   { to: "/admin", label: "Dashboard" },
   { to: "/admin/slots", label: "Slots" },
   { to: "/admin/bookings", label: "Bookings" },
+  { to: "/admin/visa-requests", label: "Visa Requests" },
   { to: "/admin/users", label: "Users" },
-  { to: "/profile", label: "Profile" },
 ];
 
 export default function Layout() {
@@ -57,10 +58,17 @@ export default function Layout() {
     "/dashboard",
     "/slots",
     "/my-bookings",
+    "/visa-services",
+    "/my-visa-requests",
     "/profile",
   ].includes(location.pathname);
   const showDashboardNav = isAuthenticated && (isAdminArea || isLearnerArea);
   const showPublicNav = !showDashboardNav;
+  const displayName = (() => {
+    const name = user?.full_name || "";
+    if (name.length <= 11) return name;
+    return `${name.slice(0, 10)}...`;
+  })();
 
   const navLink = (to, label) => (
     <Link
@@ -142,14 +150,22 @@ export default function Layout() {
           <div className="hidden items-center gap-3 md:flex">
             {isAuthenticated ? (
               <div className="flex items-center gap-4 px-1 py-2">
-                <div className="text-right">
+                <Link
+                  to="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-xl px-2 py-1 text-right transition-colors hover:bg-slate-100"
+                  aria-label="Open profile"
+                >
                   <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     {isAdmin ? "Admin" : "Learner"}
                   </div>
-                  <div className="text-sm font-bold text-nepal-dark">
-                    {user?.full_name}
+                  <div
+                    className="max-w-35 truncate text-sm font-bold text-nepal-dark transition-colors hover:text-crimson-600"
+                    title={user?.full_name}
+                  >
+                    {displayName}
                   </div>
-                </div>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="btn-secondary cursor-pointer !px-5 !py-2.5 !text-sm"
@@ -210,12 +226,21 @@ export default function Layout() {
             {showDashboardNav &&
               roleNavItems.map((item) => navLink(item.to, item.label))}
             {isAuthenticated ? (
-              <button
-                onClick={handleLogout}
-                className="btn-secondary mt-2 w-full cursor-pointer text-sm"
-              >
-                Logout
-              </button>
+              <>
+                <Link
+                  to="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-ghost justify-center border border-slate-300 text-sm"
+                >
+                  {isAdmin ? "Admin" : "Learner"}: {displayName}
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="btn-secondary mt-2 w-full cursor-pointer text-sm"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <div className="flex flex-col gap-2 pt-2">
                 <Link

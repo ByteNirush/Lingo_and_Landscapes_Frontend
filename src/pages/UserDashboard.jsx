@@ -23,19 +23,28 @@ export default function UserDashboard() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  console.log("bookings", bookings);
+  console.log("requests", requests);
+
   useEffect(() => {
-    const load = () => {
-      setBookings(getUserBookings(user));
-      setRequests(getUserRequests(user));
-      setLoading(false);
+    if (!user) return;
+
+    const load = async () => {
+      try {
+        const [bookings, requests] = await Promise.all([
+          getUserBookings(user),
+          getUserRequests(user),
+        ]);
+        setBookings(bookings);
+        setRequests(requests);
+      } catch (err) {
+        console.error("Failed to load dashboard data", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     load();
-
-    const handleWorkflowUpdate = () => load();
-    window.addEventListener("demo-workflow-updated", handleWorkflowUpdate);
-    return () =>
-      window.removeEventListener("demo-workflow-updated", handleWorkflowUpdate);
   }, [user]);
 
   const sortedBookings = [...bookings].sort(

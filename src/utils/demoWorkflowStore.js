@@ -1,16 +1,35 @@
-const STORAGE_KEY = "demo-workflow-state";
+// =============================================================
+// src/utils/demoWorkflowStore.js  — JSON Server version
+//
+
+// Pages call these exactly as before — zero changes needed there.
+// When the real backend is ready: change BASE_URL only.
+// =============================================================
+
+import axios from "axios";
+
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+// ── tiny axios helper ─────────────────────────────────────────
+const client = axios.create({
+  baseURL: BASE_URL,
+  headers: { "Content-Type": "application/json" },
+});
+
+const request = async ({ url, method = "GET", data }) => {
+  const response = await client.request({ url, method, data });
+  return response.data;
+};
 
 const nowIso = () => new Date().toISOString();
 
-const createId = (prefix) =>
-  `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+const createId = (prefix) => `${prefix}-${crypto.randomUUID()}`;
 
-const normalizeUser = (user) => {
+// ── normalise user shape (same helper as before) ──────────────
+export const normalizeUser = (user) => {
   if (!user) return null;
-
   const email = user.email || "";
   const name = user.full_name || user.name || email.split("@")[0] || "Learner";
-
   return {
     id: user.id || user._id || email || createId("user"),
     name,
@@ -23,207 +42,84 @@ const normalizeUser = (user) => {
   };
 };
 
-const seedState = () => {
-  const admin = {
-    id: "admin-1",
-    name: "Admin User",
-    full_name: "Admin User",
-    email: "admin@test.com",
-    role: "admin",
-    country: "Nepal",
-    passport_number: "-",
-    createdAt: "2026-04-01T09:00:00.000Z",
-  };
-
-  const learner = {
-    id: "user-1",
-    name: "Gagan Sunar",
-    full_name: "Gagan Sunar",
-    email: "gagan@test.com",
-    role: "user",
-    country: "Nepal",
-    passport_number: "A1234567",
-    createdAt: "2026-04-02T09:00:00.000Z",
-  };
-
-  const request = {
-    id: "req-1",
-    userId: learner.id,
-    user: learner,
-    level: "Beginner",
-    experience: "No previous experience",
-    focus: ["Speaking confidence", "Pronunciation"],
-    goal: "Travel",
-    preferredDate: "2026-04-14",
-    availabilityWindows: ["morning"],
-    availabilityDays: ["Tue", "Thu"],
-    duration: "45 min",
-    budget: 40,
-    status: "pending",
-    createdAt: "2026-04-10T08:00:00.000Z",
-  };
-
-  const approvedRequest = {
-    id: "req-2",
-    userId: "user-2",
-    user: {
-      id: "user-2",
-      name: "Asha Karki",
-      full_name: "Asha Karki",
-      email: "asha@test.com",
-      role: "user",
-      country: "Nepal",
-      passport_number: "B2345678",
-      createdAt: "2026-04-03T09:00:00.000Z",
-    },
-    level: "Elementary",
-    experience: "Self-study only",
-    focus: ["Listening comprehension", "Grammar and vocabulary"],
-    goal: "Work",
-    preferredDate: "2026-04-15",
-    availabilityWindows: ["afternoon"],
-    availabilityDays: ["Mon", "Wed"],
-    duration: "60 min",
-    budget: 55,
-    status: "approved",
-    reviewedAt: "2026-04-10T09:30:00.000Z",
-    createdAt: "2026-04-09T10:00:00.000Z",
-  };
-
-  const slot = {
-    id: "slot-1",
-    requestId: approvedRequest.id,
-    userId: approvedRequest.userId,
-    user: approvedRequest.user,
-    date: "2026-04-16",
-    time: "7:00 PM",
-    description: "Work Nepali demo class with Google Meet",
-    meetLink: "https://meet.google.com/demo-slot-1",
-    isBooked: true,
-    createdAt: "2026-04-10T10:00:00.000Z",
-  };
-
-  const booking = {
-    id: "booking-1",
-    requestId: approvedRequest.id,
-    userId: approvedRequest.userId,
-    user: approvedRequest.user,
-    slot: {
-      id: slot.id,
-      date: slot.date,
-      time: slot.time,
-      description: slot.description,
-      meetLink: slot.meetLink,
-    },
-    createdAt: "2026-04-10T10:05:00.000Z",
-  };
-
-  return {
-    users: [admin, learner, approvedRequest.user],
-    requests: [request, approvedRequest],
-    slots: [slot],
-    bookings: [booking],
-  };
-};
-
-const readRawState = () => {
-  if (typeof localStorage === "undefined") return null;
-
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return null;
-
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-};
-
-const persistState = (state) => {
-  if (typeof localStorage === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-};
-
-const emitChange = () => {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new Event("demo-workflow-updated"));
-};
-
-const getCurrentAuthUser = () => {
-  if (typeof localStorage === "undefined") return null;
-
-  try {
-    return normalizeUser(JSON.parse(localStorage.getItem("user") || "null"));
-  } catch {
-    return null;
-  }
-};
-
-const ensureCollections = (state) => ({
-  users: Array.isArray(state?.users) ? state.users : [],
-  requests: Array.isArray(state?.requests) ? state.requests : [],
-  slots: Array.isArray(state?.slots) ? state.slots : [],
-  bookings: Array.isArray(state?.bookings) ? state.bookings : [],
-});
-
-const ensureUserInState = (state, user) => {
-  const normalizedUser = normalizeUser(user);
-  if (!normalizedUser) return state;
-
-  const nextUsers = state.users.filter(
-    (item) => item.email !== normalizedUser.email,
-  );
-  nextUsers.unshift(normalizedUser);
-
-  return {
-    ...state,
-    users: nextUsers,
-  };
-};
-
-const getState = () => {
-  const raw = readRawState();
-  const state = ensureCollections(raw || seedState());
-  const withCurrentUser = ensureUserInState(state, getCurrentAuthUser());
-  if (!raw) {
-    persistState(withCurrentUser);
-  }
-  return withCurrentUser;
-};
-
-const setState = (nextState) => {
-  const normalized = ensureCollections(nextState);
-  persistState(normalized);
-  emitChange();
-  return normalized;
-};
-
+// sort newest-first (kept identical to localStorage version)
 const sortNewestFirst = (items) =>
-  [...items].sort(
-    (left, right) => new Date(right.createdAt) - new Date(left.createdAt),
-  );
+  [...items].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-const sameUser = (itemUser, currentUser) => {
-  if (!itemUser || !currentUser) return false;
-  return itemUser.email === currentUser.email || itemUser.id === currentUser.id;
+// ═══════════════════════════════════════════════════════════════
+// AUTH — used by LoginPage / SignupPage
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * signin({ email, password })
+ * Returns { user, token } — same shape the real backend will return.
+ */
+export const signin = async ({ email, password }) => {
+  const matches = await request({
+    url: `/users?email=${encodeURIComponent(email)}`,
+  });
+  const found = matches.find((u) => u.password === password);
+  if (!found) throw new Error("Invalid email or password");
+  const { password: _, ...safeUser } = found;
+  const token = `dev_${found.id}_${Date.now()}`;
+  return { user: safeUser, token };
 };
 
-export const getDemoState = () => getState();
+/**
+ * signup({ full_name, email, password, country, passport_number })
+ * Returns { user, token }
+ */
+export const signup = async ({
+  full_name,
+  email,
+  password,
+  country = "",
+  passport_number = "",
+}) => {
+  const existing = await request({
+    url: `/users?email=${encodeURIComponent(email)}`,
+  });
+  if (existing.length > 0) throw new Error("Email already registered");
 
-export const submitDemoRequest = (requestPayload, currentUser) => {
-  const user = normalizeUser(currentUser || getCurrentAuthUser());
-  const state = ensureUserInState(getState(), user);
-  const request = {
+  const newUser = {
+    id: createId("user"),
+    name: full_name,
+    full_name,
+    email,
+    password, // plaintext OK for local dev only
+    role: "user",
+    country,
+    passport_number,
+    createdAt: nowIso(),
+  };
+  const created = await request({
+    url: "/users",
+    method: "POST",
+    data: newUser,
+  });
+  const { password: _, ...safeUser } = created;
+  const token = `dev_${safeUser.id}_${Date.now()}`;
+  return { user: safeUser, token };
+};
+
+// ═══════════════════════════════════════════════════════════════
+// DEMO REQUESTS
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * submitDemoRequest(formPayload, currentUser)
+ * Called by MultiStepBookingForm — same signature as before.
+ */
+export const submitDemoRequest = async (requestPayload, currentUser) => {
+  const user = normalizeUser(currentUser);
+  const newRequest = {
     id: createId("req"),
     userId: user?.id || createId("user"),
     user: user || {
       id: createId("user"),
       name: "Learner",
-      full_name: "Learner",
       email: "",
       role: "user",
-      country: "",
-      passport_number: "",
       createdAt: nowIso(),
     },
     level: requestPayload.level || "",
@@ -238,57 +134,72 @@ export const submitDemoRequest = (requestPayload, currentUser) => {
     status: "pending",
     createdAt: nowIso(),
   };
-
-  return setState({
-    ...state,
-    requests: [request, ...state.requests],
+  return request({
+    url: "/requests",
+    method: "POST",
+    data: newRequest,
   });
 };
 
-export const getAdminUsers = () => sortNewestFirst(getState().users);
+/** Admin — returns all requests sorted newest first */
+export const getAdminRequests = async () => {
+  const data = await request({ url: "/requests?_sort=createdAt&_order=desc" });
+  return sortNewestFirst(data);
+};
 
-export const deleteAdminUser = (userId) => {
-  const state = getState();
-  const currentUser = getCurrentAuthUser();
-  const nextUsers = state.users.filter((user) => user.id !== userId);
-
-  return setState({
-    ...state,
-    users: currentUser?.id === userId ? state.users : nextUsers,
+/** Admin — approve a pending request */
+export const reviewDemoRequest = async (requestId) => {
+  return request({
+    url: `/requests/${requestId}`,
+    method: "PATCH",
+    data: { status: "approved", reviewedAt: nowIso() },
   });
 };
 
-export const getAdminRequests = () => sortNewestFirst(getState().requests);
-
-export const reviewDemoRequest = (requestId) => {
-  const state = getState();
-  const nextRequests = state.requests.map((request) =>
-    request.id === requestId
-      ? { ...request, status: "approved", reviewedAt: nowIso() }
-      : request,
-  );
-
-  return setState({ ...state, requests: nextRequests });
+/** Returns only approved requests (for slot creation picker) */
+export const getApprovedDemoRequests = async () => {
+  const data = await request({
+    url: "/requests?status=approved&_sort=createdAt&_order=desc",
+  });
+  return sortNewestFirst(data);
 };
 
-export const getApprovedDemoRequests = () =>
-  sortNewestFirst(
-    getState().requests.filter((request) => request.status === "approved"),
-  );
+/** Learner — returns requests belonging to the current user */
+export const getUserRequests = async (currentUser) => {
+  const user = normalizeUser(currentUser);
+  if (!user) return [];
+  const data = await request({
+    url: `/requests?userId=${user.id}&_sort=createdAt&_order=desc`,
+  });
+  return sortNewestFirst(data);
+};
 
-export const createDemoSlot = ({
+// ═══════════════════════════════════════════════════════════════
+// SLOTS
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * createDemoSlot({ requestId, date, time, meetLink, description })
+ * Also creates a booking and marks the request as scheduled.
+ * Called by AdminSlots — same signature as before.
+ */
+export const createDemoSlot = async ({
   requestId = null,
   date,
   time,
   meetLink,
   description,
 }) => {
-  const state = getState();
-  const linkedRequest = requestId
-    ? state.requests.find((request) => request.id === requestId)
-    : null;
-  const user =
-    linkedRequest?.user || normalizeUser(getCurrentAuthUser()) || null;
+  // 1. Fetch the linked request (if any) to get user info
+  let linkedRequest = null;
+  if (requestId) {
+    linkedRequest = await request({ url: `/requests/${requestId}` }).catch(
+      () => null,
+    );
+  }
+  const user = linkedRequest?.user || null;
+
+  // 2. Create the slot
   const slot = {
     id: createId("slot"),
     requestId: requestId || null,
@@ -301,129 +212,166 @@ export const createDemoSlot = ({
     isBooked: true,
     createdAt: nowIso(),
   };
-
-  const booking = user
-    ? {
-        id: createId("booking"),
-        requestId: requestId || null,
-        userId: user.id,
-        user,
-        slot: {
-          id: slot.id,
-          date: slot.date,
-          time: slot.time,
-          description: slot.description,
-          meetLink: slot.meetLink,
-        },
-        createdAt: nowIso(),
-      }
-    : null;
-
-  const nextRequests = linkedRequest
-    ? state.requests.map((request) =>
-        request.id === requestId
-          ? {
-              ...request,
-              status: "scheduled",
-              scheduledSlotId: slot.id,
-              scheduledAt: nowIso(),
-            }
-          : request,
-      )
-    : state.requests;
-
-  const nextState = {
-    ...state,
-    slots: [slot, ...state.slots],
-    requests: nextRequests,
-    bookings: booking ? [booking, ...state.bookings] : state.bookings,
-  };
-
-  return setState(nextState);
-};
-
-export const deleteAdminSlot = (slotId) => {
-  const state = getState();
-  const slot = state.slots.find((item) => item.id === slotId);
-  const nextSlots = state.slots.filter((item) => item.id !== slotId);
-  const nextBookings = state.bookings.filter(
-    (booking) => booking.slot?.id !== slotId,
-  );
-  const nextRequests = slot?.requestId
-    ? state.requests.map((request) =>
-        request.id === slot.requestId
-          ? {
-              ...request,
-              status: "approved",
-              scheduledSlotId: null,
-              scheduledAt: null,
-            }
-          : request,
-      )
-    : state.requests;
-
-  return setState({
-    ...state,
-    slots: nextSlots,
-    bookings: nextBookings,
-    requests: nextRequests,
+  const createdSlot = await request({
+    url: "/slots",
+    method: "POST",
+    data: slot,
   });
+
+  // 3. Create a booking if there's a linked user
+  if (user) {
+    const booking = {
+      id: createId("booking"),
+      requestId: requestId || null,
+      userId: user.id,
+      user,
+      slot: {
+        id: createdSlot.id,
+        date: createdSlot.date,
+        time: createdSlot.time,
+        description: createdSlot.description,
+        meetLink: createdSlot.meetLink,
+      },
+      createdAt: nowIso(),
+    };
+    await request({
+      url: "/bookings",
+      method: "POST",
+      data: booking,
+    });
+  }
+
+  // 4. Mark the request as scheduled
+  if (linkedRequest) {
+    await request({
+      url: `/requests/${requestId}`,
+      method: "PATCH",
+      data: {
+        status: "scheduled",
+        scheduledSlotId: createdSlot.id,
+        scheduledAt: nowIso(),
+      },
+    });
+  }
+
+  return createdSlot;
 };
 
-export const getAdminSlots = () => sortNewestFirst(getState().slots);
+/** Admin — returns all slots */
+export const getAdminSlots = async () => {
+  const data = await request({ url: "/slots?_sort=createdAt&_order=desc" });
+  return sortNewestFirst(data);
+};
 
-export const getAdminBookings = () => sortNewestFirst(getState().bookings);
+/** Admin — deletes a slot, its booking, and resets the linked request */
+export const deleteAdminSlot = async (slotId) => {
+  // Fetch the slot first to get requestId
+  const slot = await request({ url: `/slots/${slotId}` }).catch(() => null);
 
-export const cancelAdminBooking = (bookingId) => {
-  const state = getState();
-  const nextBookings = state.bookings.filter(
-    (booking) => booking.id !== bookingId,
+  // Delete the slot
+  await request({ url: `/slots/${slotId}`, method: "DELETE" });
+
+  // Delete related booking(s)
+  const bookings = await request({ url: `/bookings?slot.id=${slotId}` }).catch(
+    () => [],
   );
-  const booking = state.bookings.find((item) => item.id === bookingId);
-  const nextSlots = booking?.slot?.id
-    ? state.slots.filter((slot) => slot.id !== booking.slot.id)
-    : state.slots;
+  for (const booking of bookings) {
+    await request({ url: `/bookings/${booking.id}`, method: "DELETE" });
+  }
 
-  return setState({
-    ...state,
-    bookings: nextBookings,
-    slots: nextSlots,
+  // Reset the linked request back to "approved"
+  if (slot?.requestId) {
+    await request({
+      url: `/requests/${slot.requestId}`,
+      method: "PATCH",
+      data: {
+        status: "approved",
+        scheduledSlotId: null,
+        scheduledAt: null,
+      },
+    });
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// BOOKINGS
+// ═══════════════════════════════════════════════════════════════
+
+/** Admin — returns all bookings */
+export const getAdminBookings = async () => {
+  const data = await request({ url: "/bookings?_sort=createdAt&_order=desc" });
+  return sortNewestFirst(data);
+};
+
+/** Admin — cancel (delete) a booking and its slot */
+export const cancelAdminBooking = async (bookingId) => {
+  const booking = await request({ url: `/bookings/${bookingId}` }).catch(
+    () => null,
+  );
+  await request({ url: `/bookings/${bookingId}`, method: "DELETE" });
+  if (booking?.slot?.id) {
+    await request({ url: `/slots/${booking.slot.id}`, method: "DELETE" }).catch(
+      () => null,
+    );
+  }
+};
+
+/** Learner — returns bookings belonging to the current user */
+export const getUserBookings = async (currentUser) => {
+  const user = normalizeUser(currentUser);
+  if (!user) return [];
+  const data = await request({
+    url: `/bookings?userId=${user.id}&_sort=createdAt&_order=desc`,
   });
+  return sortNewestFirst(data);
 };
 
-export const getUserRequests = (currentUser) => {
-  const user = normalizeUser(currentUser || getCurrentAuthUser());
-  if (!user) return [];
+// ═══════════════════════════════════════════════════════════════
+// USERS (Admin)
+// ═══════════════════════════════════════════════════════════════
 
-  return sortNewestFirst(
-    getState().requests.filter((request) => sameUser(request.user, user)),
-  );
+/** Admin — returns all users */
+export const getAdminUsers = async () => {
+  const data = await request({ url: "/users?_sort=createdAt&_order=desc" });
+  // Strip passwords before returning to UI
+  return sortNewestFirst(data.map(({ password, ...u }) => u));
 };
 
-export const getUserBookings = (currentUser) => {
-  const user = normalizeUser(currentUser || getCurrentAuthUser());
-  if (!user) return [];
-
-  return sortNewestFirst(
-    getState().bookings.filter((booking) => sameUser(booking.user, user)),
-  );
+/** Admin — deletes a user */
+export const deleteAdminUser = async (userId) => {
+  return request({ url: `/users/${userId}`, method: "DELETE" });
 };
 
-export const getAdminDashboardStats = () => {
-  const state = getState();
-  const pendingRequests = state.requests.filter(
-    (request) => request.status === "pending",
-  ).length;
-  const approvedRequests = state.requests.filter(
-    (request) => request.status === "approved",
-  ).length;
+// ═══════════════════════════════════════════════════════════════
+// DASHBOARD STATS (Admin)
+// ═══════════════════════════════════════════════════════════════
 
+export const getAdminDashboardStats = async () => {
+  const [users, requests, slots, bookings] = await Promise.all([
+    request({ url: "/users" }),
+    request({ url: "/requests" }),
+    request({ url: "/slots" }),
+    request({ url: "/bookings" }),
+  ]);
   return {
-    users: state.users.length,
-    requests: state.requests.length,
-    pendingRequests,
-    approvedRequests,
-    slots: state.slots.length,
-    bookings: state.bookings.length,
+    users: users.length,
+    requests: requests.length,
+    pendingRequests: requests.filter((r) => r.status === "pending").length,
+    approvedRequests: requests.filter((r) => r.status === "approved").length,
+    slots: slots.length,
+    bookings: bookings.length,
   };
+};
+
+// ═══════════════════════════════════════════════════════════════
+// getDemoState — kept for any legacy callers
+// ═══════════════════════════════════════════════════════════════
+export const getDemoState = async () => {
+  const [users, requests, slots, bookings] = await Promise.all([
+    request({ url: "/users" }),
+    request({ url: "/requests" }),
+    request({ url: "/slots" }),
+    request({ url: "/bookings" }),
+  ]);
+  return { users, requests, slots, bookings };
 };

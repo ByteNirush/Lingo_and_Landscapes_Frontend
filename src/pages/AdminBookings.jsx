@@ -257,25 +257,33 @@ const RequestDetailsModal = ({ request, onClose }) => {
 };
 
 export default function AdminBookings() {
-  const [requests, setRequests] = useState(() => getAdminRequests());
+  const [requests, setRequests] = useState([]);
   const [selectedRequestId, setSelectedRequestId] = useState(null);
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const fetchRequests = () => {
-    setRequests(getAdminRequests());
+  const fetchRequests = async () => {
+    try {
+      const data = await getAdminRequests();
+      setRequests(data);
+    } catch (err) {
+      console.error("Failed to load requests", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const handleWorkflowUpdate = () => fetchRequests();
-    window.addEventListener("demo-workflow-updated", handleWorkflowUpdate);
-    return () =>
-      window.removeEventListener("demo-workflow-updated", handleWorkflowUpdate);
+    fetchRequests();
   }, []);
 
-  const handleReview = (requestId) => {
-    reviewDemoRequest(requestId);
-    toast.success("Request approved for slot creation");
-    fetchRequests();
+  const handleReview = async (requestId) => {
+    try {
+      await reviewDemoRequest(requestId);
+      toast.success("Request approved for slot creation");
+      fetchRequests();
+    } catch (err) {
+      toast.error("Failed to approve request");
+    }
   };
 
   const handleOpenDetails = (requestId) => {
