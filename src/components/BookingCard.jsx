@@ -8,7 +8,7 @@ export default function BookingCard({ booking, showUser = false }) {
   if (!slot) return null;
 
   return (
-    <div className="card group hover:-translate-y-1 hover:shadow-lg">
+    <div className="card group cursor-pointer hover:-translate-y-1 hover:shadow-lg">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="section-label mb-2">Confirmed Session</div>

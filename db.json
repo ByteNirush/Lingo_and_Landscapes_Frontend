@@ -1,0 +1,604 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "Admin User",
+      "full_name": "Admin User",
+      "email": "admin@test.com",
+      "password": "admin123",
+      "role": "admin",
+      "country": "Nepal",
+      "passport_number": "-",
+      "createdAt": "2026-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "user-1",
+      "name": "Gagan Sunar",
+      "full_name": "Gagan Sunar",
+      "email": "gagan@test.com",
+      "password": "test1234",
+      "role": "user",
+      "country": "Nepal",
+      "passport_number": "A1234567",
+      "createdAt": "2026-04-02T09:00:00.000Z"
+    },
+    {
+      "id": "user-2",
+      "name": "Asha Karki",
+      "full_name": "Asha Karki",
+      "email": "asha@test.com",
+      "password": "test1234",
+      "role": "user",
+      "country": "Nepal",
+      "passport_number": "B2345678",
+      "createdAt": "2026-04-03T09:00:00.000Z"
+    },
+    {
+      "id": "user-166c38dd-a782-4171-90e8-78e9a99b5af4",
+      "name": "Doctor Strange",
+      "full_name": "Doctor Strange",
+      "email": "doctor@gmail.com",
+      "password": "test@123",
+      "role": "user",
+      "country": "Germany",
+      "passport_number": "324235235",
+      "createdAt": "2026-04-12T10:58:22.501Z"
+    },
+    {
+      "id": "user-2bc9261c-92a6-40ab-b515-8c99e9a8081f",
+      "name": "Pcps test",
+      "full_name": "Pcps test",
+      "email": "pcps@test.com",
+      "password": "test@123",
+      "role": "user",
+      "country": "USA",
+      "passport_number": "sdkfskjdlk32",
+      "createdAt": "2026-04-12T11:07:34.283Z"
+    }
+  ],
+  "requests": [
+    {
+      "id": "req-1",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "Beginner",
+      "experience": "No previous experience",
+      "focus": [
+        "Speaking confidence",
+        "Pronunciation"
+      ],
+      "goal": "Travel",
+      "preferredDate": "2026-04-14",
+      "availabilityWindows": [
+        "morning"
+      ],
+      "availabilityDays": [
+        "Tue",
+        "Thu"
+      ],
+      "duration": "45 min",
+      "budget": 40,
+      "status": "scheduled",
+      "createdAt": "2026-04-10T08:00:00.000Z",
+      "reviewedAt": "2026-04-12T09:28:48.436Z",
+      "scheduledSlotId": "slot-deeb107f-1105-4c13-805a-61eedbbe4030",
+      "scheduledAt": "2026-04-12T09:29:11.495Z"
+    },
+    {
+      "id": "req-2",
+      "userId": "user-2",
+      "user": {
+        "id": "user-2",
+        "name": "Asha Karki",
+        "full_name": "Asha Karki",
+        "email": "asha@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "B2345678",
+        "createdAt": "2026-04-03T09:00:00.000Z"
+      },
+      "level": "Elementary",
+      "experience": "Self-study only",
+      "focus": [
+        "Listening comprehension",
+        "Grammar and vocabulary"
+      ],
+      "goal": "Work",
+      "preferredDate": "2026-04-15",
+      "availabilityWindows": [
+        "afternoon"
+      ],
+      "availabilityDays": [
+        "Mon",
+        "Wed"
+      ],
+      "duration": "60 min",
+      "budget": 55,
+      "status": "scheduled",
+      "reviewedAt": "2026-04-10T09:30:00.000Z",
+      "scheduledSlotId": "slot-1",
+      "scheduledAt": "2026-04-10T10:00:00.000Z",
+      "createdAt": "2026-04-09T10:00:00.000Z"
+    },
+    {
+      "id": "req-e21e23d0-0fa7-44bc-a1de-8d56cf3ebdbd",
+      "userId": "admin-1",
+      "user": {
+        "id": "admin-1",
+        "name": "Admin User",
+        "full_name": "Admin User",
+        "email": "admin@test.com",
+        "role": "admin",
+        "country": "Nepal",
+        "passport_number": "-",
+        "createdAt": "2026-04-01T09:00:00.000Z"
+      },
+      "level": "Intermediate",
+      "experience": "Self-study only",
+      "focus": [
+        "Listening comprehension"
+      ],
+      "goal": "Travel",
+      "preferredDate": "2026-04-30",
+      "availabilityWindows": [
+        "evening"
+      ],
+      "availabilityDays": [
+        "Wed"
+      ],
+      "duration": "60 min",
+      "budget": 40,
+      "status": "approved",
+      "createdAt": "2026-04-12T08:52:39.262Z",
+      "reviewedAt": "2026-04-12T09:28:47.570Z"
+    },
+    {
+      "id": "req-13fcf504-65db-4cac-b423-bae9fe3f8412",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "Advanced",
+      "experience": "Self-study only",
+      "focus": [
+        "Reading fluency"
+      ],
+      "goal": "Cultural",
+      "preferredDate": "2026-04-22",
+      "availabilityWindows": [
+        "afternoon"
+      ],
+      "availabilityDays": [
+        "Thu"
+      ],
+      "duration": "45 min",
+      "budget": 105,
+      "status": "scheduled",
+      "createdAt": "2026-04-12T08:54:02.533Z",
+      "reviewedAt": "2026-04-12T08:55:16.284Z",
+      "scheduledSlotId": "slot-2e58dc4f-0ba4-401d-b73c-51b3c4cc3082",
+      "scheduledAt": "2026-04-12T08:58:57.744Z"
+    },
+    {
+      "id": "req-a9d5da67-7a55-4951-b028-94e04fbacd16",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "Elementary",
+      "experience": "Lived or studied in Nepal",
+      "focus": [
+        "Listening comprehension"
+      ],
+      "goal": "Work",
+      "preferredDate": "2026-04-01",
+      "availabilityWindows": [
+        "afternoon"
+      ],
+      "availabilityDays": [
+        "Fri"
+      ],
+      "duration": "60 min",
+      "budget": 105,
+      "status": "approved",
+      "createdAt": "2026-04-12T09:00:51.827Z",
+      "reviewedAt": "2026-04-12T09:28:46.469Z"
+    },
+    {
+      "id": "req-f56ead92-bfe2-466a-aaf3-a53a6ce0a837",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "",
+      "experience": "Lived or studied in Nepal",
+      "focus": [
+        "Reading fluency"
+      ],
+      "goal": "Cultural",
+      "preferredDate": "2026-04-22",
+      "availabilityWindows": [
+        "evening"
+      ],
+      "availabilityDays": [
+        "Sat"
+      ],
+      "duration": "60 min",
+      "budget": 40,
+      "status": "approved",
+      "createdAt": "2026-04-12T09:08:41.373Z",
+      "reviewedAt": "2026-04-12T09:28:45.268Z"
+    },
+    {
+      "id": "req-fb100e75-87f2-4b35-b549-1b63b08b13b4",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "",
+      "experience": "Self-study only",
+      "focus": [
+        "Listening comprehension"
+      ],
+      "goal": "Cultural",
+      "preferredDate": "2026-04-30",
+      "availabilityWindows": [
+        "afternoon"
+      ],
+      "availabilityDays": [
+        "Thu"
+      ],
+      "duration": "60 min",
+      "budget": 40,
+      "status": "approved",
+      "createdAt": "2026-04-12T09:09:08.357Z",
+      "reviewedAt": "2026-04-12T09:28:44.185Z"
+    },
+    {
+      "id": "req-6d47e4f7-0333-44bf-906e-d7e5a74b2e00",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "Intermediate",
+      "experience": "Lived or studied in Nepal",
+      "focus": [
+        "Listening comprehension"
+      ],
+      "goal": "Cultural",
+      "preferredDate": "2026-04-15",
+      "availabilityWindows": [
+        "afternoon"
+      ],
+      "availabilityDays": [
+        "Thu"
+      ],
+      "duration": "45 min",
+      "budget": 40,
+      "status": "approved",
+      "createdAt": "2026-04-12T09:11:11.843Z",
+      "reviewedAt": "2026-04-12T09:28:42.402Z"
+    },
+    {
+      "id": "req-b4d856d0-ea24-4172-895a-c824ae06ee68",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "level": "Advanced",
+      "experience": "Self-study only",
+      "focus": [
+        "Reading fluency"
+      ],
+      "goal": "Work",
+      "preferredDate": "2026-04-14",
+      "availabilityWindows": [
+        "evening"
+      ],
+      "availabilityDays": [
+        "Fri"
+      ],
+      "duration": "45 min",
+      "budget": 105,
+      "status": "approved",
+      "createdAt": "2026-04-12T09:24:42.764Z",
+      "reviewedAt": "2026-04-12T09:28:37.503Z"
+    }
+  ],
+  "slots": [
+    {
+      "id": "slot-1",
+      "requestId": "req-2",
+      "userId": "user-2",
+      "user": {
+        "id": "user-2",
+        "name": "Asha Karki",
+        "full_name": "Asha Karki",
+        "email": "asha@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "B2345678",
+        "createdAt": "2026-04-03T09:00:00.000Z"
+      },
+      "date": "2026-04-16",
+      "time": "19:00",
+      "description": "Work Nepali demo class with Google Meet",
+      "meetLink": "https://meet.google.com/demo-slot-1",
+      "isBooked": true,
+      "createdAt": "2026-04-10T10:00:00.000Z"
+    },
+    {
+      "id": "slot-2e58dc4f-0ba4-401d-b73c-51b3c4cc3082",
+      "requestId": "req-13fcf504-65db-4cac-b423-bae9fe3f8412",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "date": "2026-04-22",
+      "time": "14:47",
+      "description": "Demo session for Gagan Sunar · Cultural",
+      "meetLink": "https://meet.google.com/landing",
+      "isBooked": true,
+      "createdAt": "2026-04-12T08:58:57.727Z"
+    },
+    {
+      "id": "slot-deeb107f-1105-4c13-805a-61eedbbe4030",
+      "requestId": "req-1",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "date": "2026-04-14",
+      "time": "15:19",
+      "description": "Demo session for Gagan Sunar · Travel",
+      "meetLink": "https://meet.google.com/landing",
+      "isBooked": true,
+      "createdAt": "2026-04-12T09:29:11.475Z"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "booking-1",
+      "requestId": "req-2",
+      "userId": "user-2",
+      "user": {
+        "id": "user-2",
+        "name": "Asha Karki",
+        "full_name": "Asha Karki",
+        "email": "asha@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "B2345678",
+        "createdAt": "2026-04-03T09:00:00.000Z"
+      },
+      "slot": {
+        "id": "slot-1",
+        "date": "2026-04-16",
+        "time": "19:00",
+        "description": "Work Nepali demo class with Google Meet",
+        "meetLink": "https://meet.google.com/demo-slot-1"
+      },
+      "createdAt": "2026-04-10T10:05:00.000Z"
+    },
+    {
+      "id": "booking-35f9056c-f767-4089-84c0-10caa8f2daf0",
+      "requestId": "req-13fcf504-65db-4cac-b423-bae9fe3f8412",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "slot": {
+        "id": "slot-2e58dc4f-0ba4-401d-b73c-51b3c4cc3082",
+        "date": "2026-04-22",
+        "time": "14:47",
+        "description": "Demo session for Gagan Sunar · Cultural",
+        "meetLink": "https://meet.google.com/landing"
+      },
+      "createdAt": "2026-04-12T08:58:57.734Z"
+    },
+    {
+      "id": "booking-7456b6cf-82ce-4dda-a9bb-971903492ec5",
+      "requestId": "req-1",
+      "userId": "user-1",
+      "user": {
+        "id": "user-1",
+        "name": "Gagan Sunar",
+        "full_name": "Gagan Sunar",
+        "email": "gagan@test.com",
+        "role": "user",
+        "country": "Nepal",
+        "passport_number": "A1234567",
+        "createdAt": "2026-04-02T09:00:00.000Z"
+      },
+      "slot": {
+        "id": "slot-deeb107f-1105-4c13-805a-61eedbbe4030",
+        "date": "2026-04-14",
+        "time": "15:19",
+        "description": "Demo session for Gagan Sunar · Travel",
+        "meetLink": "https://meet.google.com/landing"
+      },
+      "createdAt": "2026-04-12T09:29:11.486Z"
+    }
+  ],
+  "visaRequests": [
+    {
+      "id": "visa-4b495b7a-c021-47ca-baf7-fc2da6aabaea",
+      "userId": "user-1",
+      "fullName": "Gagan Sunar",
+      "email": "gagan@test.com",
+      "nationality": "Nepal",
+      "passportNumber": "A1234567",
+      "dateOfBirth": "2026-04-22",
+      "passportExpiry": "2026-04-22",
+      "visaType": "study",
+      "arrivalDate": "2026-04-23",
+      "duration": "90 days",
+      "entryMethod": "air",
+      "purpose": "Trekking to everset",
+      "visitedBefore": false,
+      "previousRejection": false,
+      "documentsReady": [
+        "passport",
+        "flight_ticket",
+        "travel_insurance",
+        "bank_statement"
+      ],
+      "phone": "23939",
+      "message": "",
+      "status": "completed",
+      "adminNote": "",
+      "createdAt": "2026-04-12T09:58:39.337Z",
+      "updatedAt": "2026-04-12T09:59:47.369Z"
+    },
+    {
+      "id": "visa-0c50ba25-9f56-4697-8bc9-0838231234bc",
+      "userId": "user-1",
+      "fullName": "Gagan Sunar",
+      "email": "gagan@test.com",
+      "nationality": "Nepal",
+      "passportNumber": "A1234567",
+      "dateOfBirth": "2026-04-17",
+      "passportExpiry": "2026-04-24",
+      "visaType": "study",
+      "arrivalDate": "2026-04-24",
+      "duration": "15 days",
+      "entryMethod": "land",
+      "purpose": "kkk",
+      "visitedBefore": false,
+      "previousRejection": false,
+      "documentsReady": [
+        "passport",
+        "photos",
+        "flight_ticket",
+        "hotel_booking",
+        "travel_insurance",
+        "bank_statement",
+        "invitation_letter"
+      ],
+      "phone": "989899",
+      "message": "",
+      "status": "pending",
+      "adminNote": "",
+      "createdAt": "2026-04-12T10:08:49.901Z"
+    },
+    {
+      "id": "visa-a6308928-8e5c-459d-b0c7-b2999963bf16",
+      "userId": "user-1",
+      "serviceType": "outgoing",
+      "fullName": "Gagan Sunar",
+      "email": "gagan@test.com",
+      "nationality": "Nepal",
+      "passportNumber": "A1234567",
+      "departureDate": "2026-04-14",
+      "overstay": false,
+      "servicesNeeded": [
+        "overstay_help"
+      ],
+      "pickupLocation": "sdf",
+      "phone": "sdf",
+      "message": "sdf",
+      "status": "pending",
+      "adminNote": "",
+      "createdAt": "2026-04-12T10:54:46.024Z"
+    },
+    {
+      "id": "visa-6d533966-8831-40f3-9e31-f91828473ab0",
+      "userId": "user-166c38dd-a782-4171-90e8-78e9a99b5af4",
+      "serviceType": "incoming",
+      "fullName": "Doctor Strange",
+      "email": "doctor@gmail.com",
+      "nationality": "Germany",
+      "passportNumber": "324235235",
+      "dateOfBirth": "2026-04-24",
+      "passportExpiry": "2026-04-27",
+      "visaType": "tourist",
+      "arrivalDate": "2026-05-01",
+      "duration": "15 days",
+      "entryMethod": "air",
+      "purpose": "Trekking to everest",
+      "visitedBefore": true,
+      "previousRejection": false,
+      "documentsReady": [
+        "passport"
+      ],
+      "phone": "3453453",
+      "message": "",
+      "status": "reviewing",
+      "adminNote": "note\n",
+      "createdAt": "2026-04-12T11:00:17.743Z",
+      "updatedAt": "2026-04-12T11:00:47.681Z"
+    }
+  ]
+}
