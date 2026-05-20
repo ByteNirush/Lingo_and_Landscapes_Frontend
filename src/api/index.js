@@ -1,23 +1,17 @@
-const BASE = "http://localhost:3001";
+// This file is deprecated. Use src/utils/backendApi.js for all API calls.
+// Keeping this file for backward compatibility only.
 
-export const getRequests = () =>
-  fetch(`${BASE}/demoRequests`).then((r) => r.json());
+export const getRequests = () => {
+  console.warn('getRequests is deprecated. Use backendApi.getRequests() instead');
+  return Promise.reject(new Error('Deprecated API - use backendApi'));
+};
 
-export const createRequest = (data) =>
-  fetch(`${BASE}/demoRequests`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...data,
-      id: crypto.randomUUID(),
-      status: "pending",
-      createdAt: new Date().toISOString(),
-    }),
-  }).then((r) => r.json());
+export const createRequest = () => {
+  console.warn('createRequest is deprecated. Use backendApi.createRequest() instead');
+  return Promise.reject(new Error('Deprecated API - use backendApi'));
+};
 
-export const updateRequestStatus = (id, status) =>
-  fetch(`${BASE}/demoRequests/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status }),
-  }).then((r) => r.json());
+export const updateRequestStatus = () => {
+  console.warn('updateRequestStatus is deprecated. Use backendApi.updateRequestStatus() instead');
+  return Promise.reject(new Error('Deprecated API - use backendApi'));
+};

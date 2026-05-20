@@ -12,9 +12,9 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { formatLongDate } from "../utils/date";
 import {
-  getAdminRequests,
-  reviewDemoRequest,
-} from "../utils/demoWorkflowStore";
+  getRequests,
+  updateRequestStatus,
+} from "../utils/backendApi";
 
 const statusStyles = {
   pending: "bg-amber-100 text-amber-800",
@@ -263,8 +263,8 @@ export default function AdminBookings() {
 
   const fetchRequests = async () => {
     try {
-      const data = await getAdminRequests();
-      setRequests(data);
+      const res = await getRequests();
+      setRequests(res.data || []);
     } catch (err) {
       console.error("Failed to load requests", err);
     } finally {
@@ -278,7 +278,7 @@ export default function AdminBookings() {
 
   const handleReview = async (requestId) => {
     try {
-      await reviewDemoRequest(requestId);
+      await updateRequestStatus(requestId, 'approved');
       toast.success("Request approved for slot creation");
       fetchRequests();
     } catch (err) {

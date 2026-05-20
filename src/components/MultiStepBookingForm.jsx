@@ -16,7 +16,7 @@ import {
 import { formatLongDate } from "../utils/date";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
-import { submitDemoRequest } from "../utils/demoWorkflowStore";
+import { createRequest } from "../utils/backendApi";
 import { useNavigate } from "react-router-dom";
 
 const TOTAL_STEPS = 5;
@@ -182,25 +182,22 @@ export default function MultiStepBookingForm({ selectedDate, onChangeDate }) {
   const submitForApproval = async () => {
     setSubmitting(true);
     try {
-      await submitDemoRequest(
-        {
-          level: formData.level,
-          experience: formData.experience,
-          focus: formData.focus,
-          goal: formData.goal,
-          preferredDate: preferredDateValue,
-          availabilityWindows: formData.availabilityWindows,
-          availabilityDays: formData.availabilityDays,
-          duration: formData.duration,
-          budget: formData.budget ?? DEFAULT_BUDGET,
-        },
-        user,
-      );
+      await createRequest({
+        level: formData.level,
+        experience: formData.experience,
+        focus: formData.focus,
+        goal: formData.goal,
+        preferredDate: preferredDateValue,
+        availabilityWindows: formData.availabilityWindows,
+        availabilityDays: formData.availabilityDays,
+        duration: formData.duration,
+        budget: formData.budget ?? DEFAULT_BUDGET,
+      });
       setSubmitted(true);
       toast.success("Demo request submitted");
       navigate("/my-bookings");
     } catch {
-      toast.error("Failed to submit request. Is JSON Server running?");
+      toast.error("Failed to submit request. Please try again.");
     } finally {
       setSubmitting(false);
     }

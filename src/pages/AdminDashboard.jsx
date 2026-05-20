@@ -9,10 +9,10 @@ import {
   Users,
 } from "lucide-react";
 import {
-  getAdminDashboardStats,
-  getAdminRequests,
-  getAdminSlots,
-} from "../utils/adminApi";
+  getDashboardStats,
+  getRequests,
+  getSlots,
+} from "../utils/backendApi";
 import { formatShortDateTime } from "../utils/date";
 import { mapApiError } from "../utils/errorMapper";
 
@@ -53,14 +53,14 @@ export default function AdminDashboard() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [nextStats, requests, slots] = await Promise.all([
-          getAdminDashboardStats(),
-          getAdminRequests(),
-          getAdminSlots(),
+        const [statsRes, requestsRes, slotsRes] = await Promise.all([
+          getDashboardStats(),
+          getRequests(),
+          getSlots(),
         ]);
-        setStats(nextStats);
-        setRecentRequests(requests.slice(0, 3));
-        setRecentSlots(slots.slice(0, 4));
+        setStats(statsRes);
+        setRecentRequests((requestsRes.data || []).slice(0, 3));
+        setRecentSlots((slotsRes.data || []).slice(0, 4));
       } catch (error) {
         toast.error(mapApiError(error, "Failed to load dashboard stats"));
       } finally {

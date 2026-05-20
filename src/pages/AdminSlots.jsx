@@ -3,11 +3,11 @@ import { Inbox, Plus, Trash2, X, Link2, CheckCircle2 } from "lucide-react";
 import toast from "react-hot-toast";
 import SlotCard from "../components/SlotCard";
 import {
-  createDemoSlot,
-  deleteAdminSlot,
-  getAdminSlots,
-  getApprovedDemoRequests,
-} from "../utils/demoWorkflowStore";
+  createSlot,
+  deleteSlot,
+  getSlots,
+  getApprovedRequests,
+} from "../utils/backendApi";
 
 const emptyForm = {
   requestId: "",
@@ -50,12 +50,12 @@ export default function AdminSlots() {
 
   const fetchData = async () => {
     try {
-      const [slots, approvedRequests] = await Promise.all([
-        getAdminSlots(),
-        getApprovedDemoRequests(),
+      const [slotsRes, approvedRequestsRes] = await Promise.all([
+        getSlots(),
+        getApprovedRequests(),
       ]);
-      setSlots(slots);
-      setApprovedRequests(approvedRequests);
+      setSlots(slotsRes.data || []);
+      setApprovedRequests(approvedRequestsRes.data || []);
     } catch (err) {
       console.error("Failed to load slots", err);
     } finally {
@@ -85,7 +85,7 @@ export default function AdminSlots() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await createDemoSlot({
+      await createSlot({
         requestId: form.requestId || null,
         date: form.date,
         time: form.time,
@@ -106,7 +106,7 @@ export default function AdminSlots() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this slot?")) return;
     try {
-      await deleteAdminSlot(id);
+      await deleteSlot(id);
       toast.success("Slot deleted");
       fetchData();
     } catch (error) {

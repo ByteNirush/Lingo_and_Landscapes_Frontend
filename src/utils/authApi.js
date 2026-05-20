@@ -51,6 +51,6 @@ export const signup = async (payload) => {
 };
 
 export const getProfile = async () => {
-  const response = await api.get('/me');
+  const response = await api.get('/auth/me');
   return parseProfileData(response.data, 'Invalid profile response');
 };

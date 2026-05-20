@@ -2,10 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import api from "../utils/api";
-import {
-  signin as devSignin,
-  signup as devSignup,
-} from "../utils/demoWorkflowStore";
+import { signin as apiSignin, signup as apiSignup, getProfile } from "../utils/authApi";
 
 const AuthContext = createContext(null);
 
@@ -28,38 +25,35 @@ export const AuthProvider = ({ children }) => {
   const { token, user } = session;
 
   useEffect(() => {
-    // No backend yet — just set the axios header and continue
     if (!token) {
       delete api.defaults.headers.common["Authorization"];
-    } else {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      setLoading(false);
+      return;
     }
-    setLoading(false);
 
-    // ── Restore this block when the real backend is ready ──────
-    // api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    // const loadProfile = async () => {
-    //   try {
-    //     const profile = await getProfile();
-    //     setSession((prev) => {
-    //       const mergedUser = { ...prev.user, ...profile };
-    //       localStorage.setItem("user", JSON.stringify(mergedUser));
-    //       return { ...prev, user: mergedUser };
-    //     });
-    //   } catch {
-    //     localStorage.removeItem("token");
-    //     localStorage.removeItem("user");
-    //     delete api.defaults.headers.common["Authorization"];
-    //     setSession({ token: null, user: null });
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // loadProfile();
-    // ───────────────────────────────────────────────────────────
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    const loadProfile = async () => {
+      try {
+        const profile = await getProfile();
+        setSession((prev) => {
+          const mergedUser = { ...prev.user, ...profile };
+          localStorage.setItem("user", JSON.stringify(mergedUser));
+          return { ...prev, user: mergedUser };
+        });
+      } catch (error) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        delete api.defaults.headers.common["Authorization"];
+        setSession({ token: null, user: null });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfile();
   }, [token]);
 
-  /** Called after a successful signin or signup */
   const login = (userData, token) => {
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(userData));
@@ -74,19 +68,16 @@ export const AuthProvider = ({ children }) => {
     setSession({ token: null, user: null });
   };
 
-  // ── Exposed helpers so pages can call devSignin / devSignup ──
-  // LoginPage:  const { devLogin } = useAuth(); await devLogin(email, password)
-  // SignupPage: const { devRegister } = useAuth(); await devRegister(formData)
   const devLogin = async (email, password) => {
-    const { user, token } = await devSignin({ email, password });
-    login(user, token);
-    return user;
+    const response = await apiSignin({ email, password });
+    login(response.user, response.token);
+    return response.user;
   };
 
   const devRegister = async (formData) => {
-    const { user, token } = await devSignup(formData);
-    login(user, token);
-    return user;
+    const response = await apiSignup(formData);
+    login(response.user, response.token);
+    return response.user;
   };
 
   const isAdmin = user?.role === "admin";

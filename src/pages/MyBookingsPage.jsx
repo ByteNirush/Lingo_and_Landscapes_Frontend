@@ -10,7 +10,7 @@ import {
 import BookingCard from "../components/BookingCard";
 import { useAuth } from "../context/AuthContext";
 import { formatLongDate } from "../utils/date";
-import { getUserBookings, getUserRequests } from "../utils/demoWorkflowStore";
+import { getUserBookings, getRequests } from "../utils/backendApi";
 
 const RequestCard = ({ request }) => {
   const statusStyles = {
@@ -68,12 +68,17 @@ export default function MyBookingsPage() {
 
     const load = async () => {
       try {
-        const [bookings, requests] = await Promise.all([
-          getUserBookings(user),
-          getUserRequests(user),
+        const [bookingsRes, requestsRes] = await Promise.all([
+          getUserBookings(),
+          getRequests(),
         ]);
-        setBookings(bookings);
-        setRequests(requests);
+        setBookings(bookingsRes.data || []);
+        // Filter requests for current user
+        const allRequests = requestsRes.data || [];
+        const userRequests = allRequests.filter(req => 
+          req.userId === user.id || req.userId === user._id
+        );
+        setRequests(userRequests);
       } catch (err) {
         console.error("Failed to load bookings", err);
       } finally {

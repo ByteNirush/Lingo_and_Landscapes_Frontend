@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+
+// Validate API URL on load
+if (!BASE_URL) {
+  console.error('VITE_API_URL is not defined. Using fallback: http://localhost:5000/api/v1');
+}
 
 const client = axios.create({
   baseURL: BASE_URL,
